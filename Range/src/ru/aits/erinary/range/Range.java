@@ -31,4 +31,22 @@ public class Range {
         return (number >= from && number <= to);
     }
 
+    public Range getIntersection(Range rangeA, Range rangeB) {
+        Range rangeLeft;
+        Range rangeRight;
+        if (rangeA.getFrom() < rangeB.getFrom()) {
+            rangeLeft = rangeA;
+            rangeRight = rangeB;
+        } else {
+            rangeLeft = rangeB;
+            rangeRight = rangeA;
+        }
+        if (rangeRight.getFrom() > rangeLeft.getTo()) {
+            return null;
+        } else if (rangeRight.getTo() <= rangeLeft.getTo()) {
+            return new Range(rangeRight.getFrom(), rangeRight.getTo());
+        } else {
+            return new Range(rangeLeft.getTo(), rangeRight.getFrom());
+        }
+    }
 }
