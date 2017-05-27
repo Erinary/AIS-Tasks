@@ -17,7 +17,7 @@ public class Main {
         System.out.println("Вывод интервала в порядке возрастания:");
         System.out.println("Начало: " + range.getFrom());
         System.out.println("Конец: " + range.getTo());
-        System.out.println("Длина интервала: " + range.calculateLength());
+        System.out.println("Длина интервала: " + range.getLength());
 
         if (range.isInside(number)) {
             System.out.println("Число входит в заданный промежуток");
