@@ -31,7 +31,7 @@ public class Range {
         return (number >= from && number <= to);
     }
 
-    private static Range[] orderRanges (Range rangeA, Range rangeB) {
+    private static Range[] orderRanges(Range rangeA, Range rangeB) {
         Range rangeLeft;
         Range rangeRight;
         if (rangeA.getFrom() < rangeB.getFrom()) {
@@ -57,30 +57,35 @@ public class Range {
         }
     }
 
-    public Range[] uniteRanges (Range rangeA) {
+    public Range[] uniteRanges(Range rangeA) {
         Range intersection = this.getIntersection(rangeA);
         if (intersection == null) {
             return Range.orderRanges(this, rangeA);
         } else {
             Range toReturn = new Range(Math.min(this.getFrom(), rangeA.getFrom()), Math.max(this.getTo(), rangeA.getTo()));
-            return new Range[] {toReturn};
+            return new Range[]{toReturn};
         }
 
     }
 
-    public Range[] subtractRanges (Range rangeA) {
+    public Range[] subtractRanges(Range rangeA) {
         Range intersection = this.getIntersection(rangeA);
         if (intersection == null) {
             return new Range[]{this};
         }
         if (this.isInside(rangeA.getFrom()) && !this.isInside(rangeA.getTo())) {
-            return new Range[] {new Range(this.getFrom(), rangeA.getFrom())};
+            return new Range[]{new Range(this.getFrom(), rangeA.getFrom())};
         } else if (!this.isInside(rangeA.getFrom()) && this.isInside(rangeA.getTo())) {
-            return new Range[] {new Range(rangeA.getTo(), this.getTo())};
+            return new Range[]{new Range(rangeA.getTo(), this.getTo())};
         } else if (!this.isInside(rangeA.getFrom()) && !this.isInside(rangeA.getTo())) {
-            return new Range[] {};
+            return new Range[]{};
         } else {
-            return new Range[] {new Range(this.getFrom(), rangeA.getFrom()), new Range(rangeA.getTo(), this.getTo())};
+            return new Range[]{new Range(this.getFrom(), rangeA.getFrom()), new Range(rangeA.getTo(), this.getTo())};
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%.2f; %.2f)", this.from, this.to);
     }
 }
