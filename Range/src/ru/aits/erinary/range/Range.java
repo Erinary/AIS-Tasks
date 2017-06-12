@@ -87,12 +87,19 @@ public class Range {
         if (!this.hasIntersection(rangeA)) {
             return new Range[]{new Range(this)};
         }
-        if (this.isInside(rangeA.getFrom()) && !this.isInside(rangeA.getTo())) {
+//      Когда границы интервалов равны
+        if (this.getFrom() == rangeA.getFrom() && this.getTo() == rangeA.getTo()) {
+            return new Range[]{};
+//      Вычитаемый интервал находится правее
+        } else if (this.isInside(rangeA.getFrom()) && !this.isInside(rangeA.getTo())) {
             return new Range[]{new Range(this.getFrom(), rangeA.getFrom())};
+//      Вычитаемый интервал находится левее
         } else if (!this.isInside(rangeA.getFrom()) && this.isInside(rangeA.getTo())) {
             return new Range[]{new Range(rangeA.getTo(), this.getTo())};
+//      Уменьшаемый интервал лежит внутри вычитаемого
         } else if (!this.isInside(rangeA.getFrom()) && !this.isInside(rangeA.getTo())) {
             return new Range[]{};
+//      Вычитаемый интервал внутри уменьшаемого
         } else {
             return new Range[]{new Range(this.getFrom(), rangeA.getFrom()), new Range(rangeA.getTo(), this.getTo())};
         }
