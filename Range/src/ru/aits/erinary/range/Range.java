@@ -15,6 +15,11 @@ public class Range {
         }
     }
 
+    public Range(Range rangeA) {
+        this.from = rangeA.getFrom();
+        this.to = rangeA.getTo();
+    }
+
     public double getFrom() {
         return from;
     }
@@ -44,23 +49,33 @@ public class Range {
         return new Range[]{rangeLeft, rangeRight};
     }
 
+    public boolean hasIntersection(Range rangeA) {
+        return (this.isInside(rangeA.getFrom()) || this.isInside(rangeA.getTo()) || rangeA.isInside(this.getFrom()) ||
+                rangeA.isInside(this.getTo()));
+    }
+
+    public boolean isCommonBorder(Range rangeA) {
+        return (this.getFrom() == rangeA.getTo() || rangeA.getFrom() == this.getTo());
+    }
+
     public Range getIntersection(Range rangeA) {
         Range[] orderedRanges = Range.orderRanges(this, rangeA);
         Range rangeLeft = orderedRanges[0];
         Range rangeRight = orderedRanges[1];
-        if (rangeRight.getFrom() > rangeLeft.getTo()) {
+        if (!rangeLeft.hasIntersection(rangeRight)) {
+            return null;
+        } else if (rangeLeft.isCommonBorder(rangeRight)) {
             return null;
         } else if (rangeRight.getTo() <= rangeLeft.getTo()) {
-            return new Range(rangeRight.getFrom(), rangeRight.getTo());
+            return new Range(rangeRight);
         } else {
             return new Range(rangeLeft.getTo(), rangeRight.getFrom());
         }
     }
 
     public Range[] uniteRanges(Range rangeA) {
-        Range intersection = this.getIntersection(rangeA);
-        if (intersection == null) {
-            return Range.orderRanges(this, rangeA);
+        if (!this.hasIntersection(rangeA)) {
+            return Range.orderRanges(new Range(this), new Range(rangeA));
         } else {
             Range toReturn = new Range(Math.min(this.getFrom(), rangeA.getFrom()), Math.max(this.getTo(), rangeA.getTo()));
             return new Range[]{toReturn};
@@ -69,9 +84,8 @@ public class Range {
     }
 
     public Range[] subtractRanges(Range rangeA) {
-        Range intersection = this.getIntersection(rangeA);
-        if (intersection == null) {
-            return new Range[]{this};
+        if (!this.hasIntersection(rangeA)) {
+            return new Range[]{new Range(this)};
         }
         if (this.isInside(rangeA.getFrom()) && !this.isInside(rangeA.getTo())) {
             return new Range[]{new Range(this.getFrom(), rangeA.getFrom())};
