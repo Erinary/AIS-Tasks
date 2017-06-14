@@ -102,9 +102,9 @@ public class Range {
 //      Вычитаемый интервал внутри уменьшаемого
         } else {
             if (this.from == rangeA.from) {
-                return new Range[] {new Range(rangeA.to, this.to)};
+                return new Range[]{new Range(rangeA.to, this.to)};
             } else if (this.to == rangeA.to) {
-                return new Range[] {new Range(this.from, rangeA.from)};
+                return new Range[]{new Range(this.from, rangeA.from)};
             } else {
                 return new Range[]{new Range(this.from, rangeA.from), new Range(rangeA.to, this.to)};
             }
