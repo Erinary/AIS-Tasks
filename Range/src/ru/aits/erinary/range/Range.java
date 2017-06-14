@@ -50,12 +50,11 @@ public class Range {
     }
 
     public boolean hasIntersection(Range rangeA) {
-        return (this.isInside(rangeA.from) || this.isInside(rangeA.to) || rangeA.isInside(this.from) ||
-                rangeA.isInside(this.to));
+        return (rangeA.from <= this.to && rangeA.to >= this.from);
     }
 
-    public boolean isCommonBorder(Range rangeA) {
-        return (this.from == rangeA.to || rangeA.from == this.to);
+    public boolean equals(Range rangeA) {
+        return (this.from == rangeA.from && this.to == rangeA.to);
     }
 
     public Range getIntersection(Range rangeA) {
@@ -64,7 +63,8 @@ public class Range {
         Range rangeRight = orderedRanges[1];
         if (!rangeLeft.hasIntersection(rangeRight)) {
             return null;
-        } else if (rangeLeft.isCommonBorder(rangeRight)) {
+//            пересечение по 1 концу
+        } else if (rangeLeft.to == rangeRight.from) {
             return null;
         } else if (rangeRight.to <= rangeLeft.to) {
             return new Range(rangeRight);
@@ -88,20 +88,26 @@ public class Range {
             return new Range[]{new Range(this)};
         }
 //      Когда границы интервалов равны
-        if (this.from == rangeA.from && this.to == rangeA.to) {
+        if (this.equals(rangeA)) {
             return new Range[]{};
 //      Вычитаемый интервал находится правее
         } else if (this.isInside(rangeA.from) && !this.isInside(rangeA.to)) {
-            return new Range[]{new Range(this.from, rangeA.from)};
+            return (this.from != rangeA.from) ? new Range[]{new Range(this.from, rangeA.from)} : new Range[]{};
 //      Вычитаемый интервал находится левее
         } else if (!this.isInside(rangeA.from) && this.isInside(rangeA.to)) {
-            return new Range[]{new Range(rangeA.to, this.to)};
+            return (rangeA.to != this.to) ? new Range[]{new Range(rangeA.to, this.to)} : new Range[]{};
 //      Уменьшаемый интервал лежит внутри вычитаемого
         } else if (!this.isInside(rangeA.from) && !this.isInside(rangeA.to)) {
             return new Range[]{};
 //      Вычитаемый интервал внутри уменьшаемого
         } else {
-            return new Range[]{new Range(this.from, rangeA.from), new Range(rangeA.to, this.to)};
+            if (this.from == rangeA.from) {
+                return new Range[] {new Range(rangeA.to, this.to)};
+            } else if (this.to == rangeA.to) {
+                return new Range[] {new Range(this.from, rangeA.from)};
+            } else {
+                return new Range[]{new Range(this.from, rangeA.from), new Range(rangeA.to, this.to)};
+            }
         }
     }
 

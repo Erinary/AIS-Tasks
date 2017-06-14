@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        Range rangeA = new Range(3, 8);
-        Range rangeB = new Range(3, 8);
+        Range rangeA = new Range(0, 5);
+        Range rangeB = new Range(-1, 10);
 
         System.out.printf("Интервал 1: %s", rangeA);
         System.out.println();
