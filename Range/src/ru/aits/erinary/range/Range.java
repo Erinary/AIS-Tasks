@@ -16,8 +16,8 @@ public class Range {
     }
 
     public Range(Range rangeA) {
-        this.from = rangeA.getFrom();
-        this.to = rangeA.getTo();
+        this.from = rangeA.from;
+        this.to = rangeA.to;
     }
 
     public double getFrom() {
@@ -39,7 +39,7 @@ public class Range {
     private static Range[] orderRanges(Range rangeA, Range rangeB) {
         Range rangeLeft;
         Range rangeRight;
-        if (rangeA.getFrom() < rangeB.getFrom()) {
+        if (rangeA.from < rangeB.from) {
             rangeLeft = rangeA;
             rangeRight = rangeB;
         } else {
@@ -50,12 +50,12 @@ public class Range {
     }
 
     public boolean hasIntersection(Range rangeA) {
-        return (this.isInside(rangeA.getFrom()) || this.isInside(rangeA.getTo()) || rangeA.isInside(this.getFrom()) ||
-                rangeA.isInside(this.getTo()));
+        return (this.isInside(rangeA.from) || this.isInside(rangeA.to) || rangeA.isInside(this.from) ||
+                rangeA.isInside(this.to));
     }
 
     public boolean isCommonBorder(Range rangeA) {
-        return (this.getFrom() == rangeA.getTo() || rangeA.getFrom() == this.getTo());
+        return (this.from == rangeA.to || rangeA.from == this.to);
     }
 
     public Range getIntersection(Range rangeA) {
@@ -66,10 +66,10 @@ public class Range {
             return null;
         } else if (rangeLeft.isCommonBorder(rangeRight)) {
             return null;
-        } else if (rangeRight.getTo() <= rangeLeft.getTo()) {
+        } else if (rangeRight.to <= rangeLeft.to) {
             return new Range(rangeRight);
         } else {
-            return new Range(rangeLeft.getTo(), rangeRight.getFrom());
+            return new Range(rangeLeft.to, rangeRight.from);
         }
     }
 
@@ -77,7 +77,7 @@ public class Range {
         if (!this.hasIntersection(rangeA)) {
             return Range.orderRanges(new Range(this), new Range(rangeA));
         } else {
-            Range toReturn = new Range(Math.min(this.getFrom(), rangeA.getFrom()), Math.max(this.getTo(), rangeA.getTo()));
+            Range toReturn = new Range(Math.min(this.from, rangeA.from), Math.max(this.to, rangeA.to));
             return new Range[]{toReturn};
         }
 
@@ -88,20 +88,20 @@ public class Range {
             return new Range[]{new Range(this)};
         }
 //      Когда границы интервалов равны
-        if (this.getFrom() == rangeA.getFrom() && this.getTo() == rangeA.getTo()) {
+        if (this.from == rangeA.from && this.to == rangeA.to) {
             return new Range[]{};
 //      Вычитаемый интервал находится правее
-        } else if (this.isInside(rangeA.getFrom()) && !this.isInside(rangeA.getTo())) {
-            return new Range[]{new Range(this.getFrom(), rangeA.getFrom())};
+        } else if (this.isInside(rangeA.from) && !this.isInside(rangeA.to)) {
+            return new Range[]{new Range(this.from, rangeA.from)};
 //      Вычитаемый интервал находится левее
-        } else if (!this.isInside(rangeA.getFrom()) && this.isInside(rangeA.getTo())) {
-            return new Range[]{new Range(rangeA.getTo(), this.getTo())};
+        } else if (!this.isInside(rangeA.from) && this.isInside(rangeA.to)) {
+            return new Range[]{new Range(rangeA.to, this.to)};
 //      Уменьшаемый интервал лежит внутри вычитаемого
-        } else if (!this.isInside(rangeA.getFrom()) && !this.isInside(rangeA.getTo())) {
+        } else if (!this.isInside(rangeA.from) && !this.isInside(rangeA.to)) {
             return new Range[]{};
 //      Вычитаемый интервал внутри уменьшаемого
         } else {
-            return new Range[]{new Range(this.getFrom(), rangeA.getFrom()), new Range(rangeA.getTo(), this.getTo())};
+            return new Range[]{new Range(this.from, rangeA.from), new Range(rangeA.to, this.to)};
         }
     }
 
