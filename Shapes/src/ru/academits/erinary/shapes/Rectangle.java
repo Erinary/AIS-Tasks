@@ -36,4 +36,9 @@ public class Rectangle implements Shape {
     public double getPerimeter() {
         return 2 * width + 2 * height;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Прямоугольник {а = %.2f, b = %.2f}", width, height);
+    }
 }

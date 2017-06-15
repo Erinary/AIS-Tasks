@@ -34,4 +34,9 @@ public class Square implements Shape {
     public double getPerimeter() {
         return 4 * side;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Квадрат {а = %.2f}", side);
+    }
 }

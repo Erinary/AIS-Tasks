@@ -26,4 +26,9 @@ public class Circle implements Shape {
     public double getPerimeter() {
         return 2 * Math.PI * radii;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Окружность {r = %.2f}", radii);
+    }
 }

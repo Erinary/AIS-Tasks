@@ -73,4 +73,9 @@ public class Triangle implements Shape {
     public double getPerimeter() {
         return this.getSideA() + this.getSideB() + this.getSideC();
     }
+
+    @Override
+    public String toString() {
+        return String.format("Треугольник A(%.2f, %.2f) B(%.2f, %.2f) C(%.2f, %.2f)", x1, y1, x2, y2, x3, y3);
+    }
 }
