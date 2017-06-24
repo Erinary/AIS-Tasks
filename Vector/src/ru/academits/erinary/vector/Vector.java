@@ -3,10 +3,10 @@ package ru.academits.erinary.vector;
 
 import java.util.Arrays;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
 public class Vector {
     private double[] components;
 
+    //    Заполнение вектора значениями из массива; если длина array < dimension, то в остальных компонентах 0
     public Vector(int dimension, double[] array) {
         this.components = new double[dimension];
         System.arraycopy(array, 0, this.components, 0, Math.min(dimension, array.length));
@@ -15,6 +15,7 @@ public class Vector {
         }
     }
 
+    //    Вектор размерности dimension, все компоненты = 0
     public Vector(int dimension) {
         this.components = new double[dimension];
         for (int i = 0; i < dimension; ++i) {
@@ -22,16 +23,19 @@ public class Vector {
         }
     }
 
+    //    Коснтруктор копирования
     public Vector(Vector vector) {
         this.components = new double[vector.components.length];
         System.arraycopy(vector.components, 0, this.components, 0, vector.components.length);
     }
 
+    //    Заполнение вектора значениями из массива
     public Vector(double[] array) {
         this.components = new double[array.length];
         System.arraycopy(array, 0, this.components, 0, array.length);
     }
 
+    //    Методы
     public int getSize() {
         return this.components.length;
     }

@@ -1,4 +1,6 @@
-package ru.academits.erinary.vector;
+package ru.academits.erinary.main;
+
+import ru.academits.erinary.vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
