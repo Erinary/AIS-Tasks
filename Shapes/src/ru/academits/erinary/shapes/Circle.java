@@ -1,34 +1,34 @@
 package ru.academits.erinary.shapes;
 
 public class Circle implements Shape {
-    private double radii;
+    private double radius;
 
-    public Circle(double radii) {
-        this.radii = radii;
+    public Circle(double radius) {
+        this.radius = radius;
     }
 
     @Override
     public double getWidth() {
-        return 2 * radii;
+        return 2 * radius;
     }
 
     @Override
     public double getHeight() {
-        return 2 * radii;
+        return 2 * radius;
     }
 
     @Override
     public double getArea() {
-        return Math.PI * Math.pow(radii, 2);
+        return Math.PI * Math.pow(radius, 2);
     }
 
     @Override
     public double getPerimeter() {
-        return 2 * Math.PI * radii;
+        return 2 * Math.PI * radius;
     }
 
     @Override
     public String toString() {
-        return String.format("Окружность {r = %.2f}", radii);
+        return String.format("Окружность {r = %.2f}", radius);
     }
 }
