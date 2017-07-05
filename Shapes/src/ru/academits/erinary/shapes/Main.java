@@ -43,5 +43,8 @@ public class Main {
                 new Circle(2),
                 new Rectangle(2, 3)};
 
+        System.out.printf("Самая большая фигура по площади: %s", getShapeWithMaxArea(shapes));
+        System.out.println();
+        System.out.printf("Вторая большая фигура по площади: %s", getShapeWithSecondMaxArea(shapes));
     }
 }
