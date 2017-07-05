@@ -43,6 +43,5 @@ public class Main {
                 new Circle(2),
                 new Rectangle(2, 3)};
 
-
     }
 }
