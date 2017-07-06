@@ -6,30 +6,37 @@ import java.util.Arrays;
 public class Vector {
     private double[] components;
 
-    //    Заполнение вектора значениями из массива; если длина array < dimension, то в остальных компонентах 0
+    /**
+     * Заполнение вектора значениями из массива; если длина array < dimension, то в остальных компонентах 0
+     * @param dimension размерность вектора
+     * @param array передаваемый массив, значения которого будут в векторе
+     */
     public Vector(int dimension, double[] array) {
         this.components = new double[dimension];
         System.arraycopy(array, 0, this.components, 0, Math.min(dimension, array.length));
-        for (int i = array.length; i < dimension; ++i) {
-            this.components[i] = 0;
-        }
     }
 
-    //    Вектор размерности dimension, все компоненты = 0
+    /**
+     * Вектор размерности dimension, все компоненты = 0
+     * @param dimension размерность вектора
+     */
     public Vector(int dimension) {
         this.components = new double[dimension];
-        for (int i = 0; i < dimension; ++i) {
-            this.components[i] = 0;
-        }
     }
 
-    //    Коснтруктор копирования
+    /**
+     * Коснтруктор копирования
+     * @param vector копируемый вектор
+     */
     public Vector(Vector vector) {
         this.components = new double[vector.components.length];
         System.arraycopy(vector.components, 0, this.components, 0, vector.components.length);
     }
 
-    //    Заполнение вектора значениями из массива
+    /**
+     * Заполнение вектора значениями из массива, размерность вектора будет соответствовать длине массива
+     * @param array передаваемый массив, значения которого будут в векторе
+     */
     public Vector(double[] array) {
         this.components = new double[array.length];
         System.arraycopy(array, 0, this.components, 0, array.length);
