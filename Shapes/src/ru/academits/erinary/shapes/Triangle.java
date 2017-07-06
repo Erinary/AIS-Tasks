@@ -92,8 +92,8 @@ public class Triangle implements Shape {
             return false;
         }
         Triangle triangle = (Triangle) o;
-        return this.x1 == ((Triangle) o).x1 && this.x2 == ((Triangle) o).x2 && this.x3 == ((Triangle) o).x3
-                && this.y1 == ((Triangle) o).y1 && this.y2 == ((Triangle) o).y2 && this.y3 == ((Triangle) o).y3;
+        return this.x1 == triangle.x1 && this.x2 == triangle.x2 && this.x3 == triangle.x3
+                && this.y1 == triangle.y1 && this.y2 == triangle.y2 && this.y3 == triangle.y3;
     }
 
     @Override

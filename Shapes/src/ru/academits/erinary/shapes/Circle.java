@@ -41,7 +41,7 @@ public class Circle implements Shape {
             return false;
         }
         Circle circle = (Circle) o;
-        return this.radius == ((Circle) o).radius;
+        return this.radius == circle.radius;
     }
 
     @Override

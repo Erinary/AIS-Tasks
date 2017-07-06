@@ -6,10 +6,27 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class Main {
-    private static Shape sortShapeByAreaRating(Shape[] shapes, int rating) {
-        Shape[] array = new Shape[shapes.length];
-        System.arraycopy(shapes, 0, array, 0, shapes.length);
-        Arrays.sort(array, new Comparator<Shape>() {
+    private static class PerimeterComparator implements Comparator<Shape> {
+        @Override
+        public int compare(Shape o1, Shape o2) {
+            if (o1.getPerimeter() > o2.getPerimeter()) {
+                return 1;
+            } else if (o1.getPerimeter() < o2.getPerimeter()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    private static Shape getShapeByRating(Shape[] shapes, int rating, Comparator<Shape> cmp) {
+        Shape[] array = Arrays.copyOf(shapes, shapes.length);
+        Arrays.sort(array, cmp);
+        return array[array.length - rating];
+    }
+
+    private static Shape getShapeWithMaxArea(Shape[] shapes) {
+        Comparator<Shape> cmp = new Comparator<Shape>() {
             @Override
             public int compare(Shape o1, Shape o2) {
                 if (o1.getArea() > o2.getArea()) {
@@ -20,34 +37,13 @@ public class Main {
                     return 0;
                 }
             }
-        });
-        return array[array.length - rating];
-    }
-
-    private static Shape sortShapeByPerimeterRating(Shape[] shapes, int rating) {
-        Shape[] array = new Shape[shapes.length];
-        System.arraycopy(shapes, 0, array, 0, shapes.length);
-        Arrays.sort(array, new Comparator<Shape>() {
-            @Override
-            public int compare(Shape o1, Shape o2) {
-                if (o1.getPerimeter() > o2.getPerimeter()) {
-                    return 1;
-                } else if (o1.getPerimeter() < o2.getPerimeter()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-        return array[array.length - rating];
-    }
-
-    private static Shape getShapeWithMaxArea(Shape[] shapes) {
-        return sortShapeByAreaRating(shapes, 1);
+        };
+        return getShapeByRating(shapes, 1, cmp);
     }
 
     private static Shape getShapeWithSecondMaxPerimeter(Shape[] shapes) {
-        return sortShapeByPerimeterRating(shapes, 2);
+        PerimeterComparator cmp = new PerimeterComparator();
+        return getShapeByRating(shapes, 2, cmp);
     }
 
     public static void main(String[] args) {
