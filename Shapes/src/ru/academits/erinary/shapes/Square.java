@@ -49,12 +49,14 @@ public class Square implements Shape {
             return false;
         }
         Square square = (Square) o;
-        return Double.compare(square.side, side) == 0;
+        return this.side == ((Square) o).side;
     }
 
     @Override
     public int hashCode() {
-        long temp = Double.doubleToLongBits(side);
-        return (int) (temp ^ (temp >>> 32));
+        final int prime = 37;
+        int hash = 1;
+        hash = prime * hash + (int)side;
+        return hash;
     }
 }

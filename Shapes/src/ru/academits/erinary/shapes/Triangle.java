@@ -41,20 +41,20 @@ public class Triangle implements Shape {
         return y3;
     }
 
-    public double getSideLength (double x1, double y1, double x2, double y2) {
+    private static double getSideLength (double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
     private double getSideA(){
-        return this.getSideLength(x1, y1, x2, y2);
+        return Triangle.getSideLength(x1, y1, x2, y2);
     }
 
     private double getSideB(){
-        return this.getSideLength(x2, y2, x3, y3);
+        return Triangle.getSideLength(x2, y2, x3, y3);
     }
 
     private double getSideC(){
-        return this.getSideLength(x3, y3, x1, y1);
+        return Triangle.getSideLength(x3, y3, x1, y1);
     }
 
     @Override
@@ -92,40 +92,20 @@ public class Triangle implements Shape {
             return false;
         }
         Triangle triangle = (Triangle) o;
-        if (Double.compare(triangle.x1, x1) != 0) {
-            return false;
-        }
-        if (Double.compare(triangle.y1, y1) != 0) {
-            return false;
-        }
-        if (Double.compare(triangle.x2, x2) != 0) {
-            return false;
-        }
-        if (Double.compare(triangle.y2, y2) != 0) {
-            return false;
-        }
-        if (Double.compare(triangle.x3, x3) != 0) {
-            return false;
-        }
-        return Double.compare(triangle.y3, y3) == 0;
+        return this.x1 == ((Triangle) o).x1 && this.x2 == ((Triangle) o).x2 && this.x3 == ((Triangle) o).x3
+                && this.y1 == ((Triangle) o).y1 && this.y2 == ((Triangle) o).y2 && this.y3 == ((Triangle) o).y3;
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits(x1);
-        result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y1);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(x2);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y2);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(x3);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y3);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
+        final int prime = 37;
+        int hash = 1;
+        hash = prime * hash + (int)x1;
+        hash = prime * hash + (int)y1;
+        hash = prime * hash + (int)x2;
+        hash = prime * hash + (int)y2;
+        hash = prime * hash + (int)x3;
+        hash = prime * hash + (int)y3;
+        return hash;
     }
 }
