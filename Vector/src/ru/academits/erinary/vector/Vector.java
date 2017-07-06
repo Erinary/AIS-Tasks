@@ -12,8 +12,7 @@ public class Vector {
      * @param array передаваемый массив, значения которого будут в векторе
      */
     public Vector(int dimension, double[] array) {
-        this.components = new double[dimension];
-        System.arraycopy(array, 0, this.components, 0, Math.min(dimension, array.length));
+        this.components = Arrays.copyOf(array, dimension);
     }
 
     /**
@@ -29,8 +28,7 @@ public class Vector {
      * @param vector копируемый вектор
      */
     public Vector(Vector vector) {
-        this.components = new double[vector.components.length];
-        System.arraycopy(vector.components, 0, this.components, 0, vector.components.length);
+        this(vector.components.length, vector.components);
     }
 
     /**
@@ -38,8 +36,7 @@ public class Vector {
      * @param array передаваемый массив, значения которого будут в векторе
      */
     public Vector(double[] array) {
-        this.components = new double[array.length];
-        System.arraycopy(array, 0, this.components, 0, array.length);
+        this(array.length, array);
     }
 
     //    Методы
@@ -52,14 +49,22 @@ public class Vector {
     }
 
     public Vector addVector(Vector vectorA) {
-        for (int i = 0; i < Math.min(this.components.length, vectorA.components.length); ++i) {
+        if (this.components.length < vectorA.components.length) {
+            this.components = Arrays.copyOf(this.components, vectorA.components.length);
+        }
+        int minLength = Math.min(this.components.length, vectorA.components.length);
+        for (int i = 0; i < minLength; ++i) {
             this.components[i] = this.components[i] + vectorA.components[i];
         }
         return this;
     }
 
     public Vector subtractVector(Vector vectorA) {
-        for (int i = 0; i < Math.min(this.components.length, vectorA.components.length); ++i) {
+        if (this.components.length < vectorA.components.length) {
+            this.components = Arrays.copyOf(this.components, vectorA.components.length);
+        }
+        int minLength = Math.min(this.components.length, vectorA.components.length);
+        for (int i = 0; i < minLength; ++i) {
             this.components[i] = this.components[i] - vectorA.components[i];
         }
         return this;
@@ -94,11 +99,13 @@ public class Vector {
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || this.getClass() != object.getClass()) return false;
-
+        if (this == object) {
+            return true;
+        }
+        if (object == null || this.getClass() != object.getClass()) {
+            return false;
+        }
         Vector vector = (Vector) object;
-
         return Arrays.equals(components, vector.components);
     }
 
@@ -119,7 +126,8 @@ public class Vector {
 
     public static double multiply(Vector vectorA, Vector vectorB) {
         double result = 0;
-        for (int i = 0; i < Math.min(vectorA.components.length, vectorB.components.length); ++i) {
+        int minLength = Math.min(vectorA.components.length, vectorB.components.length);
+        for (int i = 0; i < minLength; ++i) {
             result += vectorA.components[i] * vectorB.components[i];
         }
         return result;
