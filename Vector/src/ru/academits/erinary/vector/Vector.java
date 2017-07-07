@@ -39,6 +39,15 @@ public class Vector {
         this(array.length, array);
     }
 
+    /**
+     * Конструктор копирования с заданным размером; недостающие элементы заполняются 0, лишние - обрезаются
+     * @param vector передаваемые значения
+     * @param dimension размерность получаемого вектора
+     */
+    public Vector(int dimension, Vector vector) {
+        this(dimension, vector.components);
+    }
+
     //    Методы
     public int getSize() {
         return this.components.length;
