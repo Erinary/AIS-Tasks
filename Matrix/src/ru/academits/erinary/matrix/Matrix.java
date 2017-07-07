@@ -3,17 +3,16 @@ package ru.academits.erinary.matrix;
 
 import ru.academits.erinary.vector.Vector;
 
-import java.util.Arrays;
-
 public class Matrix {
-    private int height;
-    private int width;
-    private Vector[] rows;
+    private final int height;
+    private final int width;
+    private final Vector[] rows;
 
     /**
      * Матрица нулей размера height*width
+     *
      * @param height высота матрица
-     * @param width ширина матрицы
+     * @param width  ширина матрицы
      */
     public Matrix(int height, int width) {
         this.height = height;
@@ -26,6 +25,7 @@ public class Matrix {
 
     /**
      * Конструктор копирования
+     *
      * @param matrix копируемая матрица
      */
     public Matrix(Matrix matrix) {
@@ -37,6 +37,7 @@ public class Matrix {
 
     /**
      * Создание матрицы из массива векторов-строк
+     *
      * @param vectorRows массив векторов-строк
      */
     public Matrix(Vector[] vectorRows) {
@@ -55,6 +56,7 @@ public class Matrix {
 
     /**
      * Создание матрицы из двумерного массива
+     *
      * @param array массив строк
      */
     public Matrix(double[][] array) {
@@ -70,4 +72,73 @@ public class Matrix {
         }
     }
 
+    //Методы
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Получение вектора-строки по индексу
+     *
+     * @param index индекс
+     * @return копия вектора-строки
+     */
+    public Vector getRow(int index) {
+        return new Vector(this.rows[index]);
+    }
+
+    /**
+     * Задание вектора-строки по индексу; если передаваемый вектор больше размера матрицы, то вектор урезается,
+     * если меньше - дополняется 0; в матрицу передается копия вектора
+     *
+     * @param index  индекс
+     * @param vector передаваемый вектор
+     */
+    public void setRow(int index, Vector vector) {
+        vector = (this.width > vector.getSize()) ? new Vector(this.width, vector) : vector;
+        for (int i = 0; i < this.width; ++i) {
+            this.rows[index].setComponent(i, vector.getComponent(i));
+        }
+    }
+
+    /**
+     * Получение вектора-столбца по индексу
+     *
+     * @param index индекс столбца матрицы
+     * @return новый ветктор со значениями столбца матрицы
+     */
+    public Vector getColumn(int index) {
+        Vector column = new Vector(this.height);
+        for (int i = 0; i < this.height; ++i) {
+            column.setComponent(i, this.rows[i].getComponent(index));
+        }
+        return column;
+    }
+
+    /**
+     * Транспонирование матрицы с созданием новой
+     * @return транспонированная копия текущей матрицы
+     */
+    public Matrix transpose() {
+        @SuppressWarnings("SuspiciousNameCombination") Matrix newMatrix = new Matrix(this.width, this.height);
+        for (int i = 0; i < this.width; ++i) {
+            newMatrix.setRow(i, this.getColumn(i));
+        }
+        return newMatrix;
+    }
+
+    @Override
+    public String toString() {
+        String[] vectorStrings = new String[this.height];
+        for (int i = 0; i < height; ++i) {
+            vectorStrings[i] = this.rows[i].toString();
+        }
+        return String.join("\n", vectorStrings);
+
+    }
 }
