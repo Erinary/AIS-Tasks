@@ -6,9 +6,9 @@ import ru.academits.erinary.vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
-        double[] array1 = {1, 2, 3};
-        double[] array2 = {4, 5, 6};
-        double[] array3 = {7, 8, 9};
+        double[] array1 = {1, 2};
+        double[] array2 = {4, 5};
+        double[] array3 = {7, 8};
 
         Vector[] arrayVectors = {
                 new Vector(array1),
@@ -21,6 +21,7 @@ public class Main {
         System.out.println();
         System.out.println(matrix);
         System.out.println();
-        System.out.println(matrix.transpose());
+        matrix.transpose();
+        System.out.println(matrix);
     }
 }

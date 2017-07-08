@@ -126,12 +126,64 @@ public class Matrix {
      *
      * @return транспонированная копия текущей матрицы
      */
-    public Matrix transpose() {
-        @SuppressWarnings("SuspiciousNameCombination") Matrix newMatrix = new Matrix(this.getWidth(), this.getHeight());
-        for (int i = 0; i < this.getWidth(); ++i) {
-            newMatrix.setRow(i, this.getColumn(i));
+    public void transpose() {
+        Vector[] vectorRows = new Vector[this.getWidth()];
+        for (int i = 0; i < vectorRows.length; ++i) {
+            vectorRows[i] = this.getColumn(i);
         }
-        return newMatrix;
+        this.rows = vectorRows;
+    }
+
+    /**
+     * Нестатическое сложение матриц, изменяется текущая матрица
+     * @param matrix прибавляемая матрица
+     */
+    public void addMatrix(Matrix matrix) {
+        if (this.getWidth() != matrix.getWidth() || this.getHeight() != matrix.getHeight()) {
+            throw new MatrixException("Матрицы разного размера");
+        }
+        for (int i = 0; i < this.getHeight(); ++i) {
+            this.rows[i].addVector(matrix.rows[i]);
+        }
+    }
+
+    /**
+     * Нестатическое вычитание матриц, изменяется текущая матрица
+     * @param matrix вычитаемая матрица
+     */
+    public void subtractMatrix(Matrix matrix) {
+        if (this.getWidth() != matrix.getWidth() || this.getHeight() != matrix.getHeight()) {
+            throw new MatrixException("Матрицы разного размера");
+        }
+        for (int i = 0; i < this.getHeight(); ++i) {
+            this.rows[i].subtractVector(matrix.rows[i]);
+        }
+    }
+
+    /**
+     * Умножение на скаляр, изменяется текущая матрица
+     * @param number множитель
+     */
+    public void multiply(double number) {
+        for (int i = 0; i < this.getHeight(); ++i) {
+            this.rows[i].multiply(number);
+        }
+    }
+
+    /**
+     * Умножение матрицы на вектор
+     * @param vector вектор-множитель
+     * @return новый вектор-произведение
+     */
+    public Vector multiply(Vector vector) {
+        if (this.getWidth() != vector.getSize()) {
+            throw new MatrixException("Число столбцов в матрице должно совпадать с числом строк в векторе");
+        }
+        Vector result = new Vector(vector.getSize());
+        for (int i = 0; i < this.getHeight(); ++i) {
+            result.setComponent(i, Vector.multiply(this.rows[i], vector));
+        }
+        return result;
     }
 
     @Override
