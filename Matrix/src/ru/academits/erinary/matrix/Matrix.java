@@ -101,9 +101,9 @@ public class Matrix {
      * @param vector передаваемый вектор
      */
     public void setRow(int index, Vector vector) {
-        vector = (this.getWidth() > vector.getSize()) ? new Vector(this.getWidth(), vector) : vector;
+        Vector normalizedVector = (this.getWidth() > vector.getSize()) ? new Vector(this.getWidth(), vector) : vector;
         for (int i = 0; i < this.getWidth(); ++i) {
-            this.rows[index].setComponent(i, vector.getComponent(i));
+            this.rows[index].setComponent(i, normalizedVector.getComponent(i));
         }
     }
 
@@ -140,7 +140,7 @@ public class Matrix {
         for (int i = 0; i < this.getHeight(); ++i) {
             vectorStrings[i] = this.rows[i].toString();
         }
-        return String.join("\n", vectorStrings);
+        return String.join(System.lineSeparator(), vectorStrings);
 
     }
 }
