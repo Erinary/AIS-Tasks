@@ -11,10 +11,11 @@ public class Matrix {
      *
      * @param height высота матрица
      * @param width  ширина матрицы
+     * @throws MatrixException попытка создания матрицы с нулевыми размерами
      */
     public Matrix(int height, int width) {
         if (height <= 0 || width <= 0) {
-            throw new MatrixException("Нельзя просто взять и создать нулевую матрицу");
+            throw new MatrixException("Нельзя просто взять и создать пустой матрицу");
         }
         this.rows = new Vector[height];
         for (int i = 0; i < height; ++i) {
@@ -38,6 +39,7 @@ public class Matrix {
      * Создание матрицы из массива векторов-строк
      *
      * @param vectorRows массив векторов-строк
+     * @throws MatrixException попытка создания матрицы из массива векторов длины 0
      */
     public Matrix(Vector[] vectorRows) {
         if (vectorRows.length == 0) {
@@ -60,6 +62,7 @@ public class Matrix {
      * Создание матрицы из двумерного массива
      *
      * @param array массив строк
+     * @throws MatrixException попытка создания матрицы из двумерного массива длины 0
      */
     public Matrix(double[][] array) {
         this(Matrix.transformArrayToVectorRows(array));
@@ -67,6 +70,12 @@ public class Matrix {
 
     //Методы
 
+    /**
+     * Преобразует двумерный массив чисел в масив векторов; первый индекс массива - индекс вектора в массиве, второй -
+     * индекс компонента вектора
+     * @param array передаваемый массив чисел
+     * @return массив векторов
+     */
     private static Vector[] transformArrayToVectorRows(double[][] array) {
         Vector[] vectorRows = new Vector[array.length];
         for (int i = 0; i < array.length; ++i) {
@@ -137,52 +146,104 @@ public class Matrix {
     /**
      * Нестатическое сложение матриц, изменяется текущая матрица
      * @param matrix прибавляемая матрица
+     * @throws MatrixException несовпадение размеров складываемых матриц
      */
-    public void addMatrix(Matrix matrix) {
+    public Matrix addMatrix(Matrix matrix) {
         if (this.getWidth() != matrix.getWidth() || this.getHeight() != matrix.getHeight()) {
             throw new MatrixException("Матрицы разного размера");
         }
         for (int i = 0; i < this.getHeight(); ++i) {
             this.rows[i].addVector(matrix.rows[i]);
         }
+        return this;
     }
 
     /**
      * Нестатическое вычитание матриц, изменяется текущая матрица
      * @param matrix вычитаемая матрица
+     * @throws MatrixException несовпадение размеров уменьшаемой и вычитаемой матриц
      */
-    public void subtractMatrix(Matrix matrix) {
+    public Matrix subtractMatrix(Matrix matrix) {
         if (this.getWidth() != matrix.getWidth() || this.getHeight() != matrix.getHeight()) {
             throw new MatrixException("Матрицы разного размера");
         }
         for (int i = 0; i < this.getHeight(); ++i) {
             this.rows[i].subtractVector(matrix.rows[i]);
         }
+        return this;
     }
 
     /**
      * Умножение на скаляр, изменяется текущая матрица
      * @param number множитель
      */
-    public void multiply(double number) {
+    public Matrix multiply(double number) {
         for (int i = 0; i < this.getHeight(); ++i) {
             this.rows[i].multiply(number);
         }
+        return this;
     }
 
     /**
      * Умножение матрицы на вектор
      * @param vector вектор-множитель
      * @return новый вектор-произведение
+     * @throws MatrixException несовпадение ширины матрицы с размерностью вектора
      */
     public Vector multiply(Vector vector) {
         if (this.getWidth() != vector.getSize()) {
             throw new MatrixException("Число столбцов в матрице должно совпадать с числом строк в векторе");
         }
-        Vector result = new Vector(vector.getSize());
+        Vector result = new Vector(this.getHeight());
         for (int i = 0; i < this.getHeight(); ++i) {
             result.setComponent(i, Vector.multiply(this.rows[i], vector));
         }
+        return result;
+    }
+
+//    Статические методы
+
+    /**
+     * Статическое сложение матриц
+     * @param matrixA первая матрица
+     * @param matrixB вторая матрица
+     * @return матрица-результат сложения
+     * @throws MatrixException несовпадение размеров слогаемых матриц
+     */
+    public static Matrix addMatrix(Matrix matrixA, Matrix matrixB) {
+        Matrix result = new Matrix(matrixA);
+        return result.addMatrix(matrixB);
+    }
+
+    /**
+     * Статическое вычитание матриц
+     * @param matrixA первая матрица
+     * @param matrixB вторая матрица
+     * @return матрица-результат вычитания
+     * @throws MatrixException несовпадение размеров уменьшаемой и вычитаемой матриц
+     */
+    public static Matrix subtractMatrix(Matrix matrixA, Matrix matrixB) {
+        Matrix result = new Matrix(matrixA);
+        return result.subtractMatrix(matrixB);
+    }
+
+    /**
+     * Умножение матриц, создается новая матрица
+     * @param matrixA умножаемая матрица
+     * @param matrixB матрица-множитель
+     * @throws MatrixException несовпадение числа столбцов первой матрицы и числа строк второй
+     * @return матрица-результат
+     */
+    public static Matrix multiply(Matrix matrixA, Matrix matrixB) {
+        if (matrixA.getWidth() != matrixB.getHeight()) {
+            throw new MatrixException("Число столбцов одной матрицы должно быть равно числу строк другой");
+        }
+        Vector[] vectorColumns = new Vector[matrixB.getWidth()];
+        for (int i = 0; i < matrixB.getWidth(); ++i) {
+            vectorColumns[i] = matrixA.multiply(matrixB.getColumn(i));
+        }
+        Matrix result = new Matrix(vectorColumns);
+        result.transpose();
         return result;
     }
 
