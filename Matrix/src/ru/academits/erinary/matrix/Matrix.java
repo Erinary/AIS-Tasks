@@ -13,6 +13,9 @@ public class Matrix {
      * @param width  ширина матрицы
      */
     public Matrix(int height, int width) {
+        if (height <= 0 || width <= 0) {
+            throw new MatrixException("Нельзя просто взять и создать нулевую матрицу");
+        }
         this.rows = new Vector[height];
         for (int i = 0; i < height; ++i) {
             this.rows[i] = new Vector(width);
@@ -37,10 +40,16 @@ public class Matrix {
      * @param vectorRows массив векторов-строк
      */
     public Matrix(Vector[] vectorRows) {
+        if (vectorRows.length == 0) {
+            throw new MatrixException("Нельзя просто взять и создать нулевую матрицу");
+        }
         this.rows = new Vector[vectorRows.length];
         int maxWidth = 0;
         for (Vector e : vectorRows) {
             maxWidth = (maxWidth < e.getSize()) ? e.getSize() : maxWidth;
+        }
+        if (maxWidth == 0) {
+            throw new MatrixException("Нельзя просто взять и создать нулевую матрицу");
         }
         for (int i = 0; i < this.getHeight(); ++i) {
             this.rows[i] = new Vector(maxWidth, vectorRows[i]);
@@ -53,17 +62,18 @@ public class Matrix {
      * @param array массив строк
      */
     public Matrix(double[][] array) {
-        this.rows = new Vector[array.length];
-        int maxWidth = 0;
-        for (double[] e : array) {
-            maxWidth = (maxWidth < e.length) ? e.length : maxWidth;
-        }
-        for (int i = 0; i < this.getHeight(); ++i) {
-            this.rows[i] = new Vector(maxWidth, array[i]);
-        }
+        this(Matrix.transformArrayToVectorRows(array));
     }
 
     //Методы
+
+    private static Vector[] transformArrayToVectorRows(double[][] array) {
+        Vector[] vectorRows = new Vector[array.length];
+        for (int i = 0; i < array.length; ++i) {
+            vectorRows[i] = new Vector(array[i]);
+        }
+        return vectorRows;
+    }
 
     public int getHeight() {
         return this.rows.length;
@@ -113,6 +123,7 @@ public class Matrix {
 
     /**
      * Транспонирование матрицы с созданием новой
+     *
      * @return транспонированная копия текущей матрицы
      */
     public Matrix transpose() {
