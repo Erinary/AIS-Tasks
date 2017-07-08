@@ -4,9 +4,7 @@ package ru.academits.erinary.matrix;
 import ru.academits.erinary.vector.Vector;
 
 public class Matrix {
-    private final int height;
-    private final int width;
-    private final Vector[] rows;
+    private Vector[] rows;
 
     /**
      * Матрица нулей размера height*width
@@ -15,8 +13,6 @@ public class Matrix {
      * @param width  ширина матрицы
      */
     public Matrix(int height, int width) {
-        this.height = height;
-        this.width = width;
         this.rows = new Vector[height];
         for (int i = 0; i < height; ++i) {
             this.rows[i] = new Vector(width);
@@ -29,8 +25,8 @@ public class Matrix {
      * @param matrix копируемая матрица
      */
     public Matrix(Matrix matrix) {
-        this(matrix.height, matrix.width);
-        for (int i = 0; i < this.height; ++i) {
+        this(matrix.getHeight(), matrix.getWidth());
+        for (int i = 0; i < this.getHeight(); ++i) {
             this.rows[i] = new Vector(matrix.rows[i]);
         }
     }
@@ -41,15 +37,12 @@ public class Matrix {
      * @param vectorRows массив векторов-строк
      */
     public Matrix(Vector[] vectorRows) {
-        this.height = vectorRows.length;
-        this.rows = new Vector[height];
+        this.rows = new Vector[vectorRows.length];
         int maxWidth = 0;
         for (Vector e : vectorRows) {
             maxWidth = (maxWidth < e.getSize()) ? e.getSize() : maxWidth;
         }
-        this.width = maxWidth;
-
-        for (int i = 0; i < this.height; ++i) {
+        for (int i = 0; i < this.getHeight(); ++i) {
             this.rows[i] = new Vector(maxWidth, vectorRows[i]);
         }
     }
@@ -60,14 +53,12 @@ public class Matrix {
      * @param array массив строк
      */
     public Matrix(double[][] array) {
-        this.height = array.length;
-        this.rows = new Vector[height];
+        this.rows = new Vector[array.length];
         int maxWidth = 0;
         for (double[] e : array) {
             maxWidth = (maxWidth < e.length) ? e.length : maxWidth;
         }
-        this.width = maxWidth;
-        for (int i = 0; i < this.height; ++i) {
+        for (int i = 0; i < this.getHeight(); ++i) {
             this.rows[i] = new Vector(maxWidth, array[i]);
         }
     }
@@ -75,11 +66,11 @@ public class Matrix {
     //Методы
 
     public int getHeight() {
-        return height;
+        return this.rows.length;
     }
 
     public int getWidth() {
-        return width;
+        return this.rows[0].getSize();
     }
 
     /**
@@ -100,8 +91,8 @@ public class Matrix {
      * @param vector передаваемый вектор
      */
     public void setRow(int index, Vector vector) {
-        vector = (this.width > vector.getSize()) ? new Vector(this.width, vector) : vector;
-        for (int i = 0; i < this.width; ++i) {
+        vector = (this.getWidth() > vector.getSize()) ? new Vector(this.getWidth(), vector) : vector;
+        for (int i = 0; i < this.getWidth(); ++i) {
             this.rows[index].setComponent(i, vector.getComponent(i));
         }
     }
@@ -113,8 +104,8 @@ public class Matrix {
      * @return новый ветктор со значениями столбца матрицы
      */
     public Vector getColumn(int index) {
-        Vector column = new Vector(this.height);
-        for (int i = 0; i < this.height; ++i) {
+        Vector column = new Vector(this.getHeight());
+        for (int i = 0; i < this.getHeight(); ++i) {
             column.setComponent(i, this.rows[i].getComponent(index));
         }
         return column;
@@ -125,8 +116,8 @@ public class Matrix {
      * @return транспонированная копия текущей матрицы
      */
     public Matrix transpose() {
-        @SuppressWarnings("SuspiciousNameCombination") Matrix newMatrix = new Matrix(this.width, this.height);
-        for (int i = 0; i < this.width; ++i) {
+        @SuppressWarnings("SuspiciousNameCombination") Matrix newMatrix = new Matrix(this.getWidth(), this.getHeight());
+        for (int i = 0; i < this.getWidth(); ++i) {
             newMatrix.setRow(i, this.getColumn(i));
         }
         return newMatrix;
@@ -134,8 +125,8 @@ public class Matrix {
 
     @Override
     public String toString() {
-        String[] vectorStrings = new String[this.height];
-        for (int i = 0; i < height; ++i) {
+        String[] vectorStrings = new String[this.getHeight()];
+        for (int i = 0; i < this.getHeight(); ++i) {
             vectorStrings[i] = this.rows[i].toString();
         }
         return String.join("\n", vectorStrings);
