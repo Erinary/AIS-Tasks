@@ -21,21 +21,10 @@ public final class SortUtils {
      */
     public static <T> void sortList(List<T> list, Comparator<T> cmp) {
         for (int i = 1; i < list.size(); ++i) {
-            T temp = list.get(i);
-            for (int j = i - 1; j >= 0; --j) {
-                if (j == 0) {
-                    if (cmp.compare(list.get(j), temp) <= 0) {
-                        list.set(j + 1, temp);
-                    } else {
-                        list.set(j + 1, list.get(j));
-                        list.set(j, temp);
-                    }
-                } else if (cmp.compare(temp, list.get(j)) >= 0) {
-                    list.set(j + 1, temp);
-                    break;
-                } else {
-                    list.set(j + 1, list.get(j));
-                }
+            for (int j = i; j > 0 && cmp.compare(list.get(j - 1), list.get(j)) > 0; --j) {
+                T temp = list.get(j - 1);
+                list.set(j - 1, list.get(j));
+                list.set(j, temp);
             }
         }
     }
