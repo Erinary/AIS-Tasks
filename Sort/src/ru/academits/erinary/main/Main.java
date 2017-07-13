@@ -1,8 +1,6 @@
 package ru.academits.erinary.main;
 
-import ru.academits.erinary.sort.ContentType;
-import ru.academits.erinary.sort.SortException;
-import ru.academits.erinary.sort.SortUtils;
+import ru.academits.erinary.sort.*;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,16 +20,16 @@ public class Main {
     private static void sortFile(String inputFileName, String outputFileName, ContentType contentType,
                                  boolean ascendingSort) throws SortException {
         if (contentType == ContentType.INT) {
-            List<String> listString = SortUtils.readStringInput(inputFileName, EXPECTED_LINE_NUMBER);
-            List<Integer> outList = SortUtils.parseIntList(listString);
-            Comparator<Integer> cmp = (ascendingSort) ? new SortUtils.AscIntComparator() : new SortUtils.AscIntComparator().reversed();
+            List<String> listString = FileUtils.readStringInput(inputFileName, EXPECTED_LINE_NUMBER);
+            List<Integer> outList = FileUtils.parseIntList(listString);
+            Comparator<Integer> cmp = (ascendingSort) ? new AscIntComparator() : new AscIntComparator().reversed();
             SortUtils.sortList(outList, cmp);
-            SortUtils.writeOutput(outList, outputFileName);
+            FileUtils.writeOutput(outList, outputFileName);
         } else {
-            List<String> outList = SortUtils.readStringInput(inputFileName, EXPECTED_LINE_NUMBER);
-            Comparator<String> cmp = (ascendingSort) ? new SortUtils.AscStringComparator() : new SortUtils.AscStringComparator().reversed();
+            List<String> outList = FileUtils.readStringInput(inputFileName, EXPECTED_LINE_NUMBER);
+            Comparator<String> cmp = (ascendingSort) ? new AscStringComparator() : new AscStringComparator().reversed();
             SortUtils.sortList(outList, cmp);
-            SortUtils.writeOutput(outList, outputFileName);
+            FileUtils.writeOutput(outList, outputFileName);
         }
     }
 
