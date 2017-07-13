@@ -2,145 +2,41 @@ package ru.academits.erinary.main;
 
 import ru.academits.erinary.sort.ContentType;
 import ru.academits.erinary.sort.SortException;
+import ru.academits.erinary.sort.SortUtils;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     private static final int EXPECTED_LINE_NUMBER = 100;
 
     /**
-     *Обобщенная сортировка списка методом вставок.
-     * @param list сортируемый список
-     * @param cmp вид сортировки (возрастание/убывание)
-     * @param <T> тип данных списка (строки/целые числа)
-     */
-    private static <T> void sortList(List<T> list, Comparator<T> cmp) {
-        for (int i = 1; i < list.size(); ++i) {
-            T temp = list.get(i);
-            for (int j = i - 1; j >= 0; --j) {
-                if (j == 0) {
-                    if (cmp.compare(list.get(j), temp) <= 0) {
-                        list.set(j + 1, temp);
-                    } else {
-                        list.set(j + 1, list.get(j));
-                        list.set(j, temp);
-                    }
-                } else if (cmp.compare(temp, list.get(j)) >= 0) {
-                    list.set(j + 1, temp);
-                    break;
-                } else {
-                    list.set(j + 1, list.get(j));
-                }
-            }
-        }
-    }
-
-    /**
-     * Компаратор для сортировки списка целых чисел по возрастанию.
-     */
-    private static class AscIntComparator implements Comparator<Integer> {
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            return o1.compareTo(o2);
-        }
-    }
-
-    /**
-     * Компаратор для сортировки списка строк по возрастанию.
-     */
-    private static class AscStringComparator implements Comparator<String> {
-        @Override
-        public int compare(String o1, String o2) {
-            return o1.compareTo(o2);
-        }
-    }
-
-    /**
      * Основной метод чтения файла, сортировки содержимого и записи нового файла.
-     * @param in имя входного файла
-     * @param out имя выходного файла
-     * @param contentType тип данных файла
-     * @param ascendingSort вид сортировки
+     *
+     * @param inputFileName  имя входного файла
+     * @param outputFileName имя выходного файла
+     * @param contentType    тип данных файла
+     * @param ascendingSort  вид сортировки
      * @throws SortException пробрасывает исключения из используемых методов
      */
-    private static void sortFile(String in, String out, ContentType contentType, boolean ascendingSort) throws SortException {
+    private static void sortFile(String inputFileName, String outputFileName, ContentType contentType,
+                                 boolean ascendingSort) throws SortException {
         if (contentType == ContentType.INT) {
-            List<String> listString = Main.readStringInput(in);
-            List<Integer> outList = Main.parseIntList(listString);
-            Comparator<Integer> cmp = (ascendingSort) ? new AscIntComparator() : new AscIntComparator().reversed();
-            Main.sortList(outList, cmp);
-            Main.writeOutput(outList, out);
+            List<String> listString = SortUtils.readStringInput(inputFileName, EXPECTED_LINE_NUMBER);
+            List<Integer> outList = SortUtils.parseIntList(listString);
+            Comparator<Integer> cmp = (ascendingSort) ? new SortUtils.AscIntComparator() : new SortUtils.AscIntComparator().reversed();
+            SortUtils.sortList(outList, cmp);
+            SortUtils.writeOutput(outList, outputFileName);
         } else {
-            List<String> outList = Main.readStringInput(in);
-            Comparator<String> cmp = (ascendingSort) ? new AscStringComparator() : new AscStringComparator().reversed();
-            Main.sortList(outList, cmp);
-            Main.writeOutput(outList, out);
+            List<String> outList = SortUtils.readStringInput(inputFileName, EXPECTED_LINE_NUMBER);
+            Comparator<String> cmp = (ascendingSort) ? new SortUtils.AscStringComparator() : new SortUtils.AscStringComparator().reversed();
+            SortUtils.sortList(outList, cmp);
+            SortUtils.writeOutput(outList, outputFileName);
         }
     }
 
     /**
-     * Метод чтения входного файла
-     * @param inputFile имя входного файла
-     * @return список строк с содержимым файла
-     * @throws SortException ошибка отсутствия входного файла
-     */
-    private static List<String> readStringInput(String inputFile) throws SortException {
-        try (Scanner scanner = new Scanner(new FileInputStream(inputFile))) {
-            List<String> listString = new ArrayList<>(EXPECTED_LINE_NUMBER);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                listString.add(line);
-            }
-            return listString;
-        } catch (FileNotFoundException e) {
-            throw new SortException("Файл не найден!");
-        }
-    }
-
-    /**
-     * Метод преобразования списка строк в список целых чисел, если строки содержат только цифры
-     * @param listString преобразуемый список строк
-     * @return новый список целых чисел
-     * @throws SortException в списке присутствуют элементы, не являющиеся числом
-     */
-    private static List<Integer> parseIntList(List<String> listString) throws SortException {
-        List<Integer> listInt = new ArrayList<>(listString.size());
-        for (String s : listString) {
-            try {
-                Integer number = Integer.valueOf(s);
-                listInt.add(number);
-            } catch (NumberFormatException e) {
-                throw new SortException(String.format("Строка в файле не является числом: '%s'", s));
-            }
-        }
-        return listInt;
-    }
-
-    /**
-     * Метод записи нового файла из отсортированного списка
-     * @param sortedList отсортированный список
-     * @param outputFile имя выходного файла
-     * @param <T> тип данных отсортированного списка
-     * @throws SortException ошибка при создании нового файла
-     */
-    private static <T> void writeOutput(List<T> sortedList, String outputFile) throws SortException {
-        try (PrintWriter writer = new PrintWriter(outputFile)) {
-            for (T e : sortedList) {
-                writer.println(e);
-            }
-        } catch (FileNotFoundException e) {
-            throw new SortException("Ошибка создания выходного файла!");
-        }
-    }
-
-    /**
-     * Метод печатает справку в консоль
+     * Метод печатает справку в консоль.
      */
     private static void printHelp() {
         System.out.println("Выдает файл с отсортированным по возрастанию или убыванию содержимым входного файла.");
@@ -154,7 +50,8 @@ public class Main {
     }
 
     /**
-     * Точка входа, обрабатывает передаваемые в программу аргументы командной строк
+     * Точка входа, обрабатывает передаваемые в программу аргументы командной строки.
+     *
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
@@ -168,8 +65,8 @@ public class Main {
             return;
         }
 
-        String inputFile = args[0];
-        String outputFile = args[1];
+        String inputFileName = args[0];
+        String outputFileName = args[1];
         String typeArg = args[2];
         String sortOrderArg = args[3];
 
@@ -199,10 +96,12 @@ public class Main {
         }
 
         try {
-            Main.sortFile(inputFile, outputFile, contentType, ascendingSort);
+            Main.sortFile(inputFileName, outputFileName, contentType, ascendingSort);
             System.out.println("Сделано!");
         } catch (SortException e) {
             System.out.printf("Ошибка: %s", e.getMessage());
+        } catch (Exception e) {
+            System.out.printf("Непредвиденная ошибка (%s): %s", e.getClass(), e.getMessage());
         }
     }
 }
