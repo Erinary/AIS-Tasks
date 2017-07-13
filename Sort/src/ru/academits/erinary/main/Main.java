@@ -47,29 +47,7 @@ public class Main {
     private static class AscIntComparator implements Comparator<Integer> {
         @Override
         public int compare(Integer o1, Integer o2) {
-            if (o1 > o2) {
-                return 1;
-            } else if (o1 < o2) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    /**
-     * Компаратор для сортировки списка целых чисел по убыванию.
-     */
-    private static class DescIntComparator implements Comparator<Integer> {
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            if (o1 > o2) {
-                return -1;
-            } else if (o1 < o2) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return o1.compareTo(o2);
         }
     }
 
@@ -80,16 +58,6 @@ public class Main {
         @Override
         public int compare(String o1, String o2) {
             return o1.compareTo(o2);
-        }
-    }
-
-    /**
-     * Компаратор для сортировки списка строк по убыванию.
-     */
-    private static class DescStringComparator implements Comparator<String> {
-        @Override
-        public int compare(String o1, String o2) {
-            return -o1.compareTo(o2);
         }
     }
 
@@ -105,12 +73,12 @@ public class Main {
         if (contentType == ContentType.INT) {
             List<String> listString = Main.readStringInput(in);
             List<Integer> outList = Main.parseIntList(listString);
-            Comparator<Integer> cmp = (ascendingSort) ? new AscIntComparator() : new DescIntComparator();
+            Comparator<Integer> cmp = (ascendingSort) ? new AscIntComparator() : new AscIntComparator().reversed();
             Main.sortList(outList, cmp);
             Main.writeOutput(outList, out);
         } else {
             List<String> outList = Main.readStringInput(in);
-            Comparator<String> cmp = (ascendingSort) ? new AscStringComparator() : new DescStringComparator();
+            Comparator<String> cmp = (ascendingSort) ? new AscStringComparator() : new AscStringComparator().reversed();
             Main.sortList(outList, cmp);
             Main.writeOutput(outList, out);
         }
@@ -200,8 +168,8 @@ public class Main {
             return;
         }
 
-        String in = args[0];
-        String out = args[1];
+        String inputFile = args[0];
+        String outputFile = args[1];
         String typeArg = args[2];
         String sortOrderArg = args[3];
 
@@ -231,8 +199,8 @@ public class Main {
         }
 
         try {
-            Main.sortFile(in, out, contentType, ascendingSort);
-            System.out.println("Done!");
+            Main.sortFile(inputFile, outputFile, contentType, ascendingSort);
+            System.out.println("Сделано!");
         } catch (SortException e) {
             System.out.printf("Ошибка: %s", e.getMessage());
         }
