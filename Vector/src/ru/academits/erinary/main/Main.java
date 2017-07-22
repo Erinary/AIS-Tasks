@@ -6,6 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Vector vectorA = new Vector(new double[]{1, 2, 3});
         Vector vectorB = new Vector(new double[]{1, 2, 3, 4, 5});
+        Vector vectorC = new Vector(new double[]{1, 2, 3, 4, 5});
 
         System.out.printf("Вектор А: %s %n", vectorA.toString());
         System.out.printf("Его размерность: %d %n", vectorA.getSize());
@@ -31,5 +32,7 @@ public class Main {
         System.out.printf("A + B: %s%n", Vector.add(vectorA, vectorB));
         System.out.printf("A - B: %s%n", Vector.subtract(vectorA, vectorB));
         System.out.printf("A * B: %.2f%n", Vector.multiply(vectorA, vectorB));
+        vectorC.removeComponent(0);
+        System.out.printf("Убрать компонент по индексу: %s", vectorC);
         }
     }

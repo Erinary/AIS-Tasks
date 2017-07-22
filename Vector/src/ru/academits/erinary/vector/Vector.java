@@ -106,6 +106,13 @@ public class Vector {
         this.components[index] = number;
     }
 
+    public void removeComponent(int index) {
+        double[] array = new double[this.getSize() - 1];
+        System.arraycopy(this.components, 0, array, 0, index);
+        System.arraycopy(this.components, index + 1, array, index, array.length - index);
+        this.components = array;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
