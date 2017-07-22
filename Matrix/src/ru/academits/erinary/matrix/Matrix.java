@@ -73,6 +73,7 @@ public class Matrix {
     /**
      * Преобразует двумерный массив чисел в масив векторов; первый индекс массива - индекс вектора в массиве, второй -
      * индекс компонента вектора
+     *
      * @param array передаваемый массив чисел
      * @return массив векторов
      */
@@ -131,9 +132,8 @@ public class Matrix {
     }
 
     /**
-     * Транспонирование матрицы с созданием новой
+     * Транспонирование матрицы, изменяет текущий экземпляр
      *
-     * @return транспонированная копия текущей матрицы
      */
     public void transpose() {
         Vector[] vectorRows = new Vector[this.getWidth()];
@@ -145,6 +145,7 @@ public class Matrix {
 
     /**
      * Нестатическое сложение матриц, изменяется текущая матрица
+     *
      * @param matrix прибавляемая матрица
      * @throws MatrixException несовпадение размеров складываемых матриц
      */
@@ -160,6 +161,7 @@ public class Matrix {
 
     /**
      * Нестатическое вычитание матриц, изменяется текущая матрица
+     *
      * @param matrix вычитаемая матрица
      * @throws MatrixException несовпадение размеров уменьшаемой и вычитаемой матриц
      */
@@ -175,6 +177,7 @@ public class Matrix {
 
     /**
      * Умножение на скаляр, изменяется текущая матрица
+     *
      * @param number множитель
      */
     public Matrix multiply(double number) {
@@ -186,6 +189,7 @@ public class Matrix {
 
     /**
      * Умножение матрицы на вектор
+     *
      * @param vector вектор-множитель
      * @return новый вектор-произведение
      * @throws MatrixException несовпадение ширины матрицы с размерностью вектора
@@ -201,10 +205,31 @@ public class Matrix {
         return result;
     }
 
+    private void removeColumn(int index) {
+        for (Vector e : this.rows) {
+            e.removeComponent(index);
+        }
+    }
+
+    private void removeRow(int index) {
+        Vector[] vectorArray = new Vector[this.rows.length- 1];
+        System.arraycopy(this.rows, 0, vectorArray, 0, index);
+        System.arraycopy(this.rows, index + 1, vectorArray, index, vectorArray.length - index);
+        this.rows = vectorArray;
+    }
+
+    public Matrix getСomplementaryMinor(int indexRow, int indexColumn) {
+        Matrix result = new Matrix(this);
+        result.removeRow(indexRow);
+        result.removeColumn(indexColumn);
+        return result;
+    }
+
 //    Статические методы
 
     /**
      * Статическое сложение матриц
+     *
      * @param matrixA первая матрица
      * @param matrixB вторая матрица
      * @return матрица-результат сложения
@@ -217,6 +242,7 @@ public class Matrix {
 
     /**
      * Статическое вычитание матриц
+     *
      * @param matrixA первая матрица
      * @param matrixB вторая матрица
      * @return матрица-результат вычитания
@@ -229,10 +255,11 @@ public class Matrix {
 
     /**
      * Умножение матриц, создается новая матрица
+     *
      * @param matrixA умножаемая матрица
      * @param matrixB матрица-множитель
-     * @throws MatrixException несовпадение числа столбцов первой матрицы и числа строк второй
      * @return матрица-результат
+     * @throws MatrixException несовпадение числа столбцов первой матрицы и числа строк второй
      */
     public static Matrix multiply(Matrix matrixA, Matrix matrixB) {
         if (matrixA.getWidth() != matrixB.getHeight()) {

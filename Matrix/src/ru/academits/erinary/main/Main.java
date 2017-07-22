@@ -25,9 +25,11 @@ public class Main {
         Matrix matrixA = new Matrix(arrayVectorsA);
         Matrix matrixB = new Matrix(arrayVectorsB);
         Matrix matrixC = new Matrix(arrayVectorsC);
+        Matrix matrixD = new Matrix(arrayVectorsA);
         System.out.printf("Матрица А:%n%s%n", matrixA);
         System.out.printf("Матрица B:%n%s%n", matrixB);
         System.out.printf("Матрица C:%n%s%n", matrixC);
+        System.out.printf("Матрица D:%n%s%n", matrixD);
         System.out.println();
         System.out.printf("Вектор-столбец матрицы А:%n%s%n", matrixA.getColumn(0));
         System.out.println();
@@ -37,5 +39,6 @@ public class Main {
         System.out.printf("A+C:%n%s%n", matrixA.addMatrix(matrixC));
         System.out.printf("A-C:%n%s%n", matrixA.subtractMatrix(matrixC));
         System.out.printf("A*number:%n%s%n", matrixA.multiply(5));
+        System.out.printf("Дополнительный минор матрицы D М22: %n%s%n", matrixD.getСomplementaryMinor(1, 1));
     }
 }
