@@ -212,7 +212,7 @@ public class Matrix {
      * @return элемент a(i, j)
      */
     public double getMatrixElement(int indexRow, int indexColumn) {
-        return this.rows[indexRow - 1].getComponent(indexColumn - 1);
+        return this.rows[indexRow].getComponent(indexColumn);
     }
 
     /**
@@ -248,8 +248,8 @@ public class Matrix {
      */
     public Matrix getСomplementaryMinor(int indexRow, int indexColumn) {
         Matrix result = new Matrix(this);
-        result.removeRow(indexRow - 1);
-        result.removeColumn(indexColumn - 1);
+        result.removeRow(indexRow);
+        result.removeColumn(indexColumn);
         return result;
     }
 
@@ -263,12 +263,15 @@ public class Matrix {
         if (this.getHeight() != this.getWidth()) {
             throw new MatrixException("Матрица должна быть квадратной!");
         }
+        if (this.getHeight() == 1) {
+            return this.getMatrixElement(0,0);
+        }
         if (this.getHeight() == 2) {
-            return this.getMatrixElement(1, 1) * this.getMatrixElement(2, 2) -
-                    this.getMatrixElement(2, 1) * this.getMatrixElement(1, 2);
+            return this.getMatrixElement(0, 0) * this.getMatrixElement(1, 1) -
+                    this.getMatrixElement(1, 0) * this.getMatrixElement(0, 1);
         }
         double result = 0;
-        for (int i = 1; i <= this.getHeight(); ++i) {
+        for (int i = 0; i < this.getHeight(); ++i) {
             double intermediateDeterminant = this.getСomplementaryMinor(i, 1)
                     .getMatrixDeterminantWithDecomposition();
             result += Math.pow(-1, 1 + i) * this.getMatrixElement(i, 1) * intermediateDeterminant;

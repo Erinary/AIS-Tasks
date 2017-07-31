@@ -63,8 +63,8 @@ public class Main {
         System.out.printf("A+C:%n%s%n", matrixA.addMatrix(matrixC));
         System.out.printf("A-C:%n%s%n", matrixA.subtractMatrix(matrixC));
         System.out.printf("A*number:%n%s%n", matrixA.multiply(5));
-        System.out.printf("Дополнительный минор матрицы D М22: %n%s%n", matrixD.getСomplementaryMinor(2, 2));
-        System.out.printf("Элемент а(1 1) матрицы F = %.2f%n", matrixF.getMatrixElement(1, 1));
+        System.out.printf("Дополнительный минор матрицы D М22: %n%s%n", matrixD.getСomplementaryMinor(1, 1));
+        System.out.printf("Элемент а(1 1) матрицы F = %.2f%n", matrixF.getMatrixElement(0, 0));
         System.out.printf("Определитель матрицы F = %.2f%n", matrixF.getMatrixDeterminantWithDecomposition());
         System.out.printf("Определитель матрицы Е = %.2f%n", matrixE.getMatrixDeterminantWithDecomposition());
         System.out.printf("Определитель матрицы G = %.2f%n", matrixG.getMatrixDeterminantWithDecomposition());
