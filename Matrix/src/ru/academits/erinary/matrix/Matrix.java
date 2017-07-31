@@ -133,7 +133,6 @@ public class Matrix {
 
     /**
      * Транспонирование матрицы, изменяет текущий экземпляр
-     *
      */
     public void transpose() {
         Vector[] vectorRows = new Vector[this.getWidth()];
@@ -205,23 +204,75 @@ public class Matrix {
         return result;
     }
 
+    /**
+     * Получение элемента матрицы a(i, j)
+     *
+     * @param indexRow    индекс строки (i)
+     * @param indexColumn индекс сотлбца (j)
+     * @return элемент a(i, j)
+     */
+    public double getMatrixElement(int indexRow, int indexColumn) {
+        return this.rows[indexRow - 1].getComponent(indexColumn - 1);
+    }
+
+    /**
+     * Убирает из матрицы столбец по индексу
+     *
+     * @param index индекс удаляемого столбца
+     */
     private void removeColumn(int index) {
         for (Vector e : this.rows) {
             e.removeComponent(index);
         }
     }
 
+
+    /**
+     * Убирает из матрицы строку по индексу
+     *
+     * @param index индекс удаляемой строки
+     */
     private void removeRow(int index) {
-        Vector[] vectorArray = new Vector[this.rows.length- 1];
+        Vector[] vectorArray = new Vector[this.rows.length - 1];
         System.arraycopy(this.rows, 0, vectorArray, 0, index);
         System.arraycopy(this.rows, index + 1, vectorArray, index, vectorArray.length - index);
         this.rows = vectorArray;
     }
 
+    /**
+     * Получение дополнительного минора матрицы к произвольному элементу а(i, j)
+     *
+     * @param indexRow    индекс вычеркиваемой строки (i)
+     * @param indexColumn индекс вычеркиваемого столбца (j)
+     * @return дополнительный минор в виде отдельной матрицы
+     */
     public Matrix getСomplementaryMinor(int indexRow, int indexColumn) {
         Matrix result = new Matrix(this);
-        result.removeRow(indexRow);
-        result.removeColumn(indexColumn);
+        result.removeRow(indexRow - 1);
+        result.removeColumn(indexColumn - 1);
+        return result;
+    }
+
+    /**
+     * Вычисление детерминанта матрицы разложением по первому столбцу
+     *
+     * @return детерминант матрицы
+     * @throws MatrixException если текущая матрица не квадратная
+     */
+    public double getMatrixDeterminantWithDecomposition() {
+        if (this.getHeight() != this.getWidth()) {
+            throw new MatrixException("Матрица должна быть квадратной!");
+        }
+        if (this.getHeight() == 2) {
+            return this.getMatrixElement(1, 1) * this.getMatrixElement(2, 2) -
+                    this.getMatrixElement(2, 1) * this.getMatrixElement(1, 2);
+        }
+        double result = 0;
+        for (int i = 1; i <= this.getHeight(); ++i) {
+            double intermediateDeterminant = this.getСomplementaryMinor(i, 1)
+                    .getMatrixDeterminantWithDecomposition();
+            result += Math.pow(-1, 1 + i) * this.getMatrixElement(i, 1) * intermediateDeterminant;
+        }
         return result;
     }
 
