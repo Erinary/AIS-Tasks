@@ -22,6 +22,10 @@ public class SimpleLinkedList<T> {
         }
     }
 
+    /**
+     * Получение размера списка
+     * @return размер списка
+     */
     public int getSize() {
         int counter = 0;
         for (ListItem p = head; p != null; p = p.next) {
@@ -30,6 +34,11 @@ public class SimpleLinkedList<T> {
         return counter;
     }
 
+    /**
+     * Получение узла по индексу
+     * @param index индекс узла
+     * @return узел
+     */
     private ListItem getListItem(int index) {
         if (head == null) {
             throw new RuntimeException("Список пуст");
@@ -47,19 +56,38 @@ public class SimpleLinkedList<T> {
         return p;
     }
 
+    /**
+     * Вставка в начало списка
+     * @param unit значение нового узла
+     */
     public void setFirstUnit(T unit) {
         head = new ListItem(unit, head);
     }
 
+    /**
+     * Получение первого узла
+     * @return значение узла
+     */
     public T getFirstUnit() {
         return getUnit(0);
     }
 
+    /**
+     * Получение значения узла по индексу
+     * @param index индекс узла
+     * @return значение узла
+     */
     public T getUnit(int index) {
         ListItem p = this.getListItem(index);
         return p.data;
     }
 
+    /**
+     * Изменение значения узла по индексу
+     * @param index индекс узла
+     * @param newData новое значение
+     * @return старое значение
+     */
     public T setUnit(int index, T newData) {
         ListItem p = this.getListItem(index);
         T temp = p.data;
@@ -67,6 +95,11 @@ public class SimpleLinkedList<T> {
         return temp;
     }
 
+    /**
+     * Удаление узла по индексу
+     * @param index индекс узла
+     * @return значение удаленного узла
+     */
     public T deleteUnit(int index) {
         T temp;
         if (index == 0) {
@@ -84,15 +117,22 @@ public class SimpleLinkedList<T> {
         return temp;
     }
 
+    /**
+     * Удаление первого узла
+     * @return выдает значение удаленного узла
+     */
     public T deleteFirst() {
         return this.deleteUnit(0);
     }
 
+    /**
+     * Вставка элемента по индексу
+     * @param data значение нового узла
+     * @param index индекс вставки
+     */
     public void insertUnit(T data, int index) {
         if (index == 0) {
-            ListItem newUnit = new ListItem(data);
-            newUnit.next = head;
-            head = newUnit;
+            this.setFirstUnit(data);
         } else {
             ListItem previous = this.getListItem(index - 1);
             ListItem current = previous.next;
@@ -102,9 +142,7 @@ public class SimpleLinkedList<T> {
         }
     }
 
-    public void insertFirst(T data) {
-        this.insertUnit(data, 0);
-    }
+
 
 
 }
