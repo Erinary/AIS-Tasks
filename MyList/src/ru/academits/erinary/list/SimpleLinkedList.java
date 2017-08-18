@@ -1,5 +1,7 @@
 package ru.academits.erinary.list;
 
+import java.util.Collection;
+
 public class SimpleLinkedList<T> {
     private ListItem head;
     private int size;
@@ -215,6 +217,51 @@ public class SimpleLinkedList<T> {
         deletedNode.data = null;
         deletedNode.next = null;
         --this.size;
+    }
+
+    /**
+     * Разворот списка
+     */
+    public void inverseList() {
+        ListItem prev = null;
+        ListItem current = head;
+        while (current != null){
+            ListItem next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        head = prev;
+    }
+
+    /**
+     * Преобразует список в массив
+     * @return массив, содержащий элементы списка
+     */
+    public Object[] toArray() {
+        Object[] result = new Object[size];
+        int i = 0;
+        for (ListItem p = head; p != null; p = p.next){
+            result[i++] = p.data;
+        }
+        return result;
+    }
+
+    /**
+     * Добавление в конец списка передаваемой коллекции
+     * @param c коллекция
+     * @return true, если операция прошла успешно
+     */
+    public boolean addAll(Collection<? extends T> c) {
+        if (c.size() == 0) {
+            System.out.println("Передаваемая коллекция пуста");
+            return true;
+        }
+        for (T o: c) {
+            this.insertNode(o, size);
+            ++size;
+        }
+        return true;
     }
 }
 
