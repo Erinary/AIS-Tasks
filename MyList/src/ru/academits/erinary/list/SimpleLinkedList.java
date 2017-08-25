@@ -1,10 +1,11 @@
 package ru.academits.erinary.list;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class SimpleLinkedList<T> {
     private ListItem head;
-    private int size;
+    private int size = 0;
 
     public SimpleLinkedList() {
         this.head = null;
@@ -44,17 +45,19 @@ public class SimpleLinkedList<T> {
         if (head == null) {
             throw new IndexOutOfBoundsException("Список пуст");
         }
-        if (index < 0 || index > size - 1) {
+        if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Недопустимое значение индекса");
         }
         ListItem p = head;
-        for (int i = 0; i < index; ++i) {
-            p = p.next;
+        ListItem temp = null;
+        for (int i = 0; i <= index; ++i) {
             if (p == null) {
-                throw new RuntimeException("Список кончился.");
+                break;
             }
+            temp = p;
+            p = p.next;
         }
-        return p;
+        return temp;
     }
 
     /**
@@ -153,7 +156,7 @@ public class SimpleLinkedList<T> {
      * @param index индекс вставки
      */
     public void insertNode(T data, int index) {
-        if (index < 0 || index > size - 1) {
+        if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Недопустимое значение индекса");
         }
         if (index == 0) {
@@ -225,7 +228,7 @@ public class SimpleLinkedList<T> {
     public void inverseList() {
         ListItem prev = null;
         ListItem current = head;
-        while (current != null){
+        while (current != null) {
             ListItem next = current.next;
             current.next = prev;
             prev = current;
@@ -236,12 +239,13 @@ public class SimpleLinkedList<T> {
 
     /**
      * Преобразует список в массив
+     *
      * @return массив, содержащий элементы списка
      */
     public Object[] toArray() {
         Object[] result = new Object[size];
         int i = 0;
-        for (ListItem p = head; p != null; p = p.next){
+        for (ListItem p = head; p != null; p = p.next) {
             result[i++] = p.data;
         }
         return result;
@@ -249,6 +253,7 @@ public class SimpleLinkedList<T> {
 
     /**
      * Добавление в конец списка передаваемой коллекции
+     *
      * @param c коллекция
      * @return true, если операция прошла успешно
      */
@@ -257,11 +262,14 @@ public class SimpleLinkedList<T> {
             System.out.println("Передаваемая коллекция пуста");
             return true;
         }
-        for (T o: c) {
+        for (T o : c) {
             this.insertNode(o, size);
-            ++size;
         }
         return true;
+    }
+
+    public String toString() {
+        return Arrays.toString(this.toArray());
     }
 }
 
