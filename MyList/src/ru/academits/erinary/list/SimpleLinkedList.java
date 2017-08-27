@@ -1,6 +1,5 @@
 package ru.academits.erinary.list;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 public class SimpleLinkedList<T> {
@@ -76,7 +75,10 @@ public class SimpleLinkedList<T> {
      * @return значение узла
      */
     public T getHead() {
-        return getNodeData(0);
+        if (head == null){
+            throw new IndexOutOfBoundsException("Список пуст!");
+        }
+        return this.head.data;
     }
 
     /**
@@ -268,8 +270,38 @@ public class SimpleLinkedList<T> {
         return true;
     }
 
+    /**
+     * Копирование текущего списка
+     * @return копию списка
+     */
+    public SimpleLinkedList<T> copyList() {
+        SimpleLinkedList<T> result = new SimpleLinkedList<>();
+        if (this.head == null){
+            return result;
+        }
+        result.head = result.new ListItem(head.data);
+        ListItem temp = result.head;
+        for (ListItem p = head.next; p != null; p = p.next) {
+            ListItem node = result.new ListItem(p.data);
+            temp.next = node;
+            temp = node;
+        }
+        result.size = this.size;
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return Arrays.toString(this.toArray());
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (ListItem p = head; p != null; p = p.next){
+            sb.append(p.data);
+            if (p.next != null) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }
 

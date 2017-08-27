@@ -17,5 +17,25 @@ public class Main {
         System.out.println(testStringList);
         System.out.println(testStringList.getNodeData(1));
         System.out.println(testIntegerList);
+        testStringList.inverseList();
+        System.out.println(testStringList);
+        testIntegerList.inverseList();
+        System.out.println(testIntegerList);
+
+        SimpleLinkedList<String> copyString = testStringList.copyList();
+        System.out.println(copyString);
+        SimpleLinkedList<Integer> copyInteger = testIntegerList.copyList();
+        System.out.println(copyInteger);
+
+        System.out.println(copyInteger.getNodeData(0));
+        System.out.println(copyInteger.getSize());
+        System.out.println(copyInteger.setNodeData(4, 9));
+        System.out.println(copyInteger.deleteNode(4));
+        copyInteger.deleteHead();
+        System.out.println(copyInteger);
+        copyInteger.insertNode(11, 3);
+        System.out.println(copyInteger);
+        copyInteger.deleteNodeByData(2);
+        System.out.println(copyInteger);
     }
 }
