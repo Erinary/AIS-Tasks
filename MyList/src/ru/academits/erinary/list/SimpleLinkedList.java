@@ -1,6 +1,7 @@
 package ru.academits.erinary.list;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class SimpleLinkedList<T> {
     private ListItem head;
@@ -44,19 +45,14 @@ public class SimpleLinkedList<T> {
         if (head == null) {
             throw new IndexOutOfBoundsException("Список пуст");
         }
-        if (index < 0 || index > size) {
+        if (index < 0 || index > size - 1) {
             throw new IndexOutOfBoundsException("Недопустимое значение индекса");
         }
         ListItem p = head;
-        ListItem temp = null;
-        for (int i = 0; i <= index; ++i) {
-            if (p == null) {
-                break;
-            }
-            temp = p;
+        for (int i = 0; i < index; ++i) {
             p = p.next;
         }
-        return temp;
+        return p;
     }
 
     /**
@@ -75,7 +71,7 @@ public class SimpleLinkedList<T> {
      * @return значение узла
      */
     public T getHead() {
-        if (head == null){
+        if (head == null) {
             throw new IndexOutOfBoundsException("Список пуст!");
         }
         return this.head.data;
@@ -141,11 +137,10 @@ public class SimpleLinkedList<T> {
      * @return выдает значение удаленного узла
      */
     public T deleteHead() {
-        T temp;
         if (head == null) {
             throw new IndexOutOfBoundsException("Список пуст");
         }
-        temp = head.data;
+        T temp = head.data;
         head = head.next;
         --this.size;
         return temp;
@@ -166,9 +161,7 @@ public class SimpleLinkedList<T> {
         } else {
             ListItem previous = this.getNode(index - 1);
             ListItem current = previous.next;
-            ListItem newUnit = new ListItem(data);
-            previous.next = newUnit;
-            newUnit.next = current;
+            previous.next = new ListItem(data, current);
             ++this.size;
         }
     }
@@ -183,11 +176,11 @@ public class SimpleLinkedList<T> {
             throw new IndexOutOfBoundsException("Список пуст");
         }
         for (ListItem p = head, previous = null; true; previous = p, p = p.next) {
-            if (p.data.equals(data) && previous != null) {
+            if (Objects.equals(p.data, data) && previous != null) {
                 previous.next = p.next;
                 --this.size;
                 break;
-            } else if (p.data.equals(data) && previous == null) {
+            } else if (Objects.equals(p.data, data) && previous == null) {
                 head = p.next;
                 --this.size;
                 break;
@@ -259,24 +252,35 @@ public class SimpleLinkedList<T> {
      * @param c коллекция
      * @return true, если операция прошла успешно
      */
+    @SuppressWarnings("unchecked")
     public boolean addAll(Collection<? extends T> c) {
         if (c.size() == 0) {
-            System.out.println("Передаваемая коллекция пуста");
-            return true;
+            return false;
         }
-        for (T o : c) {
-            this.insertNode(o, size);
+        ListItem previous = (size == 0) ? null : this.getNode(size - 1);
+        for (T o: c) {
+            ListItem newNode = new ListItem(o);
+            if (previous == null) {
+                this.insertHead(o);
+                previous = this.head;
+                ++this.size;
+            } else {
+                previous.next = newNode;
+                previous = newNode;
+                ++this.size;
+            }
         }
         return true;
     }
 
     /**
      * Копирование текущего списка
+     *
      * @return копию списка
      */
     public SimpleLinkedList<T> copyList() {
         SimpleLinkedList<T> result = new SimpleLinkedList<>();
-        if (this.head == null){
+        if (this.head == null) {
             return result;
         }
         result.head = result.new ListItem(head.data);
@@ -294,7 +298,7 @@ public class SimpleLinkedList<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
-        for (ListItem p = head; p != null; p = p.next){
+        for (ListItem p = head; p != null; p = p.next) {
             sb.append(p.data);
             if (p.next != null) {
                 sb.append(", ");

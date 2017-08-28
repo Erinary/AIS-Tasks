@@ -9,6 +9,7 @@ public class Main {
         SimpleLinkedList<String> testStringList = new SimpleLinkedList<>();
         testStringList.insertNode("A", 0);
         testStringList.insertNode("B", 1);
+        testStringList.insertNode(null, 2);
 
         SimpleLinkedList<Integer> testIntegerList = new SimpleLinkedList<>();
         ArrayList<Integer> arrayList = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
@@ -37,5 +38,10 @@ public class Main {
         System.out.println(copyInteger);
         copyInteger.deleteNodeByData(2);
         System.out.println(copyInteger);
+        System.out.println(testIntegerList);
+        System.out.println(testIntegerList.getNodeData(3));
+
+        testStringList.deleteNodeByData(null);
+        System.out.println(testStringList);
     }
 }
