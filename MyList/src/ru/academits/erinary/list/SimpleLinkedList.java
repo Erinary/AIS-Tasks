@@ -171,23 +171,25 @@ public class SimpleLinkedList<T> {
      *
      * @param data передаваемое значение
      */
-    public void deleteNodeByData(T data) {
+    public boolean deleteNodeByData(T data) {
         if (head == null) {
-            throw new IndexOutOfBoundsException("Список пуст");
+            return false;
+        }
+        if (Objects.equals(head.data, data) && data == null) {
+            head = head.next;
+            --this.size;
+            return true;
         }
         for (ListItem p = head, previous = null; true; previous = p, p = p.next) {
             if (Objects.equals(p.data, data) && previous != null) {
                 previous.next = p.next;
                 --this.size;
                 break;
-            } else if (Objects.equals(p.data, data) && previous == null) {
-                head = p.next;
-                --this.size;
-                break;
             } else if (p.next == null) {
-                throw new RuntimeException("Такого значения в списке нет");
+                return false;
             }
         }
+        return true;
     }
 
     /**
@@ -263,7 +265,6 @@ public class SimpleLinkedList<T> {
             if (previous == null) {
                 this.insertHead(o);
                 previous = this.head;
-                ++this.size;
             } else {
                 previous.next = newNode;
                 previous = newNode;

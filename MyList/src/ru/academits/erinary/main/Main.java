@@ -43,5 +43,15 @@ public class Main {
 
         testStringList.deleteNodeByData(null);
         System.out.println(testStringList);
+        System.out.println(testStringList.getSize());
+
+        ArrayList<String> stringCollection = new ArrayList<>(Arrays.asList("C", "D", "E"));
+        testStringList.addAll(stringCollection);
+        System.out.println(testStringList);
+
+        SimpleLinkedList<Integer> emptyTest = new SimpleLinkedList<>();
+        emptyTest.addAll(arrayList);
+        System.out.println(emptyTest);
+        System.out.println(emptyTest.getSize());
     }
 }
