@@ -175,18 +175,16 @@ public class SimpleLinkedList<T> {
         if (head == null) {
             return false;
         }
-        if (Objects.equals(head.data, data) && data == null) {
+        if (Objects.equals(head.data, data)) {
             head = head.next;
             --this.size;
             return true;
         }
-        for (ListItem p = head, previous = null; true; previous = p, p = p.next) {
-            if (Objects.equals(p.data, data) && previous != null) {
+        for (ListItem p = head.next, previous = head; p != null; previous = p, p = p.next) {
+            if (Objects.equals(p.data, data)) {
                 previous.next = p.next;
                 --this.size;
                 break;
-            } else if (p.next == null) {
-                return false;
             }
         }
         return true;
@@ -260,7 +258,7 @@ public class SimpleLinkedList<T> {
             return false;
         }
         ListItem previous = (size == 0) ? null : this.getNode(size - 1);
-        for (T o: c) {
+        for (T o : c) {
             ListItem newNode = new ListItem(o);
             if (previous == null) {
                 this.insertHead(o);
