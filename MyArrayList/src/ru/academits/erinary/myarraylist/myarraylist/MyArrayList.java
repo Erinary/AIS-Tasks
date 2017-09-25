@@ -1,141 +1,211 @@
 package ru.academits.erinary.myarraylist.myarraylist;
 
+import java.util.*;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
-public class MyArrayList<T> implements List {
+public class MyArrayList<T> implements List<T> {
     private static final int DEFAULT_CAPACITY = 10;
-    private Object[] items;
+    private T[] items;
     private int size = 0;
 
+    @SuppressWarnings("unchecked")
     public MyArrayList(int initialCapacity) {
-        this.items = new Object[initialCapacity];
+        this.items = (T[]) new Object[initialCapacity];
     }
 
+    @SuppressWarnings("unchecked")
     public MyArrayList() {
-        this.items = new Object[DEFAULT_CAPACITY];
+        this.items = (T[]) new Object[DEFAULT_CAPACITY];
+    }
+
+    private class MyIterator implements Iterator<T> {
+        int current = 0;
+
+        @Override
+        public boolean hasNext() {
+            return current < size;
+        }
+
+        @Override
+        public T next() {
+            T result;
+            if (hasNext()) {
+                result = get(current);
+                current += 1;
+            } else {
+                throw new NoSuchElementException();
+            }
+            return result;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
 //    Методы
 
+    /**
+     * Возвращает размер списка.
+     *
+     * @return размер списка
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Проверяет, пуст ли список.
+     *
+     * @return true, если список пуст
+     */
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     * Проверяет наличие эелмента в списке
+     *
+     * @param o искомый элемент
+     * @return true, если элемент о есть в списке
+     */
     @Override
     public boolean contains(Object o) {
-        if (o == null) {
-            for (Object e : items) {
-                if (e == null) {
-                    return true;
-                }
-            }
-        } else {
-            for (Object e : items) {
-                if (e.equals(o)) {
-                    return true;
-                }
+        for (T e : items) {
+            if (Objects.equals(e, o)) {
+                return true;
             }
         }
         return false;
     }
 
     @Override
-    public Iterator iterator() {
-        return null;
+    public MyIterator iterator() {
+        return new MyIterator();
     }
 
+    /**
+     * Преобразует список в массив
+     *
+     * @return массив, содержащий элементы списка
+     */
     @Override
     public Object[] toArray() {
-        Object[] newArray = new Object[this.items.length];
-        System.arraycopy(this.items, 0, newArray, 0, this.items.length);
-        return newArray;
+        return Arrays.copyOf(this.items, this.size);
     }
 
+    /**
+     * Добавляет элемент в конец списка
+     *
+     * @param element добавляемый элемент
+     * @return true, если текущая коллекция была изменена
+     */
     @Override
-    public boolean add(Object o) {
+    public boolean add(T element) {
         if (size >= this.items.length) {
             this.increaseCapacity();
         }
-        this.items[size] = o;
+        this.items[size] = element;
         ++size;
         return true;
     }
 
+    /**
+     * Метод увеличивает вместимость списка два раза
+     */
+    @SuppressWarnings("unchecked")
     private void increaseCapacity() {
-        Object[] old = this.items;
-        this.items = new Object[old.length * 2];
-        System.arraycopy(old, 0, items, 0, old.length);
+        T[] old = this.items;
+        this.items = Arrays.copyOf(old, old.length * 2);
     }
 
+    /**
+     * Удаление узла по значению
+     *
+     * @param o переданное значение
+     * @return true, если список был изменен
+     */
     @Override
     public boolean remove(Object o) {
-        if (o == null) {
-            for (int i = 0; i < size; ++i) {
-                if (this.items[i] == null) {
-                    this.remove(i);
-                    return true;
-                }
-            }
-        } else {
-            for (int i = 0; i < size; ++i) {
-                if (this.items[i].equals(o)) {
-                    this.remove(i);
-                    return true;
-                }
+        for (int i = 0; i < size; ++i) {
+            if (Objects.equals(this.items[i], o)) {
+                this.remove(i);
+                return true;
             }
         }
         return false;
     }
 
+    /**
+     * Добавляет в конец списка переданную коллекцию
+     *
+     * @param c передаваемая коллекция
+     * @return true, если список был изменен
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    public boolean addAll(Collection c) {
-        if (c.isEmpty()) {
-            throw new NullPointerException("Передаваемая коллекция пуста!");
-        }
-        if (c.size() + size >= this.items.length) {
-            this.ensureCapacity(c.size() - size);
-        }
-        Object[] collectionToCopy = c.toArray();
-        int oldSize = this.size;
-        System.arraycopy(collectionToCopy, 0, this.items, size, collectionToCopy.length);
-        return oldSize != this.size;
+    public boolean addAll(Collection<? extends T> c) {
+//        if (c.isEmpty()) {
+//            return false;
+//        }
+//        if (c.size() + size >= this.items.length) {
+//            this.ensureCapacity(c.size() - size);
+//        }
+//        T[] collectionToCopy = (T[]) c.toArray();
+//        int oldSize = this.size;
+//        System.arraycopy(collectionToCopy, 0, this.items, size, collectionToCopy.length);
+//        return oldSize != this.size;
+        return this.addAll(this.size, c);
     }
 
+    /**
+     * Добавляет переданную коллекцию в список по индексу
+     *
+     * @param index позиция, куда нужно вставить коллекцию
+     * @param c     передаваемая коллекция
+     * @return true, если список был изменен
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    public boolean addAll(int index, Collection c) {
+    public boolean addAll(int index, Collection<? extends T> c) {
         if (c.isEmpty()) {
-            throw new NullPointerException("Передаваемая коллекция пуста!");
+            return false;
         }
+        // проверка, влезет ли коллекция при данной вместимости
         if (c.size() + size >= this.items.length) {
             this.ensureCapacity(c.size() - size);
         }
-        Object[] collectionToCopy = c.toArray();
+        T[] collectionToCopy = (T[]) c.toArray();
         int oldSize = this.size;
         if (size - index > 0) {
             System.arraycopy(this.items, index, this.items, index + collectionToCopy.length, size - index);
         }
         System.arraycopy(collectionToCopy, 0, this.items, index, collectionToCopy.length);
+        this.size += c.size();
         return oldSize != this.size;
     }
 
+    /**
+     * Метод проверяет, что вместимость списка не менее переданного минимального значения; если меньше, то
+     * то увеличивает вместимость, если нет - ничего не делает
+     *
+     * @param minCapacity минимальное значение вместимости
+     */
+    @SuppressWarnings("unchecked")
     public void ensureCapacity(int minCapacity) {
         if (this.items.length < minCapacity) {
-            Object[] old = this.items;
-            this.items = new Object[this.items.length + minCapacity];
+            T[] old = this.items;
+            this.items = (T[]) new Object[this.items.length + minCapacity];
             System.arraycopy(old, 0, this.items, 0, old.length);
         }
     }
 
+    /**
+     * Удаляет все элементы списка
+     */
     @Override
     public void clear() {
         for (int i = 0; i < size; ++i) {
@@ -144,27 +214,46 @@ public class MyArrayList<T> implements List {
         size = 0;
     }
 
+    /**
+     * Получение элемента списка по индексу
+     *
+     * @param index индекс элемента
+     * @return требуемый элемент
+     */
     @Override
-    public Object get(int index) {
+    public T get(int index) {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException("Выход за границы списка");
         }
         return this.items[index];
     }
 
+    /**
+     * Устанавливет значение элемента по индексу
+     *
+     * @param index   индекс элемента
+     * @param element новое значение
+     * @return старое значение элемента
+     */
     @Override
-    public Object set(int index, Object element) {
+    public T set(int index, T element) {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException("Выход за границы списка");
         }
-        Object oldElement = this.items[index];
+        T oldElement = this.items[index];
         this.items[index] = element;
         return oldElement;
     }
 
+    /**
+     * Вставка нового элемента по индексу
+     *
+     * @param index   индекс
+     * @param element новый элемент
+     */
     @Override
-    public void add(int index, Object element) {
-        if (index >= size || index < 0) {
+    public void add(int index, T element) {
+        if (index > size || index < 0) {
             throw new IndexOutOfBoundsException("Выход за границы списка");
         }
         if (size >= this.items.length) {
@@ -174,19 +263,31 @@ public class MyArrayList<T> implements List {
             System.arraycopy(this.items, index, this.items, index + 1, size - index);
         }
         this.items[index] = element;
+        ++this.size;
     }
 
+    /**
+     * Удаление элемента по индексу
+     *
+     * @param index индекс
+     * @return значение удаленного элемента
+     */
     @Override
-    public Object remove(int index) {
+    public T remove(int index) {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException("Выход за границы списка");
         }
-        Object removedElement = this.items[index];
+        T removedElement = this.items[index];
         if (index < size - 1) {
             System.arraycopy(this.items, index + 1, this.items, index, size - index - 1);
         }
         --size;
         return removedElement;
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(items);
     }
 
     @Override
