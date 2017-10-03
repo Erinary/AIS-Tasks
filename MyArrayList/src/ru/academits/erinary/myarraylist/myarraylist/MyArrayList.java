@@ -98,6 +98,27 @@ public class MyArrayList<T> implements List<T> {
     }
 
     /**
+     * Заполняет переданный масив элементами из текущего списка
+     *
+     * @param a    переданный массив
+     * @param <T1> используемый параметризированный тип
+     * @return переданный массив или новый (в случае если длина переданного массива меньше размера списка) массив,
+     * содержащий элементы списка; если список меньше массива, то в конец массива добавляется элемент, равный null
+     */
+    @Override
+    public <T1> T1[] toArray(T1[] a) {
+        if (a.length < size) {
+            //noinspection unchecked
+            return (T1[]) Arrays.copyOf(items, size, a.getClass());
+        }
+        System.arraycopy(items, 0, a, 0, size);
+        if (a.length > size) {
+            a[size] = null;
+        }
+        return a;
+    }
+
+    /**
      * Добавляет элемент в конец списка
      *
      * @param element добавляемый элемент
@@ -184,7 +205,7 @@ public class MyArrayList<T> implements List<T> {
      *
      * @param minCapacity минимальное значение вместимости
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "WeakerAccess"})
     public void ensureCapacity(int minCapacity) {
         if (this.items.length < minCapacity) {
             T[] old = this.items;
@@ -324,17 +345,17 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public ListIterator listIterator() {
-        return null;
+    public ListIterator<T> listIterator() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public ListIterator listIterator(int index) {
-        return null;
+    public ListIterator<T> listIterator(int index) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public List subList(int fromIndex, int toIndex) {
+    public List<T> subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();
     }
 
@@ -347,36 +368,83 @@ public class MyArrayList<T> implements List<T> {
     @Override
     public boolean retainAll(Collection c) {
         try {
-            @SuppressWarnings("unchecked")
-            T[] coincidentItems = (T[]) new Object[this.size];
-            int i = 0;
-            for(T listElement: this) {
-                if (c.contains(listElement)) {
-                    coincidentItems[i] = listElement;
-                    ++i;
-                }
-            }
-            this.items = coincidentItems;
-            this.size = i;
-         } catch (ClassCastException e) {
+            this.filterElements(c, true);
+        } catch (ClassCastException e) {
             System.out.println("Типы коллекций не совпадают!");
             return false;
         }
         return true;
     }
 
+    /**
+     * Убирает из списка все элементы, содержащиеся в переданной коллекции
+     *
+     * @param c переданная коллекция
+     * @return true, если текущий список был изменен
+     */
     @Override
     public boolean removeAll(Collection c) {
-        return false;
+        try {
+            this.filterElements(c, false);
+        } catch (ClassCastException e) {
+            System.out.println("Типы коллекций не совпадают!");
+            return false;
+        }
+        return true;
     }
 
+    /**
+     * Внутренний метод для сравнения текущего списка и переданной коллекции; заменяет массив в текущем списке массивом
+     * записанными элементами
+     *
+     * @param c    переданная коллекция
+     * @param mode модификатор для создания массива: true - запоминает совпавшие элементы,
+     *             false - запоминает несовпавшие элементы
+     */
+    private void filterElements(Collection c, boolean mode) {
+        @SuppressWarnings("unchecked")
+        T[] coincidentItems = (T[]) new Object[this.size];
+        int i = 0;
+        for (T listElement : this) {
+            if (mode) {
+                if (c.contains(listElement)) {
+                    coincidentItems[i] = listElement;
+                    ++i;
+                }
+            } else {
+                if (!c.contains(listElement)) {
+                    coincidentItems[i] = listElement;
+                    ++i;
+                }
+            }
+        }
+        this.items = coincidentItems;
+        this.size = i;
+    }
+
+    /**
+     * Проверяет содержание элементов переданной коллекции в списке
+     *
+     * @param c переданная коллекция
+     * @return true, если текущий список содержит все элементы переданной коллекции
+     */
     @Override
     public boolean containsAll(Collection c) {
-        return false;
+        for (Object e : c) {
+            if (!this.contains(e)) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    @Override
-    public Object[] toArray(Object[] a) {
-        return new Object[0];
+    /**
+     * Метод обрезает вместимость(capacity) списка до размера(size) списка
+     */
+    public void trimToSize() {
+        if (this.size < this.items.length) {
+            //noinspection unchecked
+            items = (size == 0) ? (T[]) new Object[]{} : Arrays.copyOf(items, size);
+        }
     }
 }
