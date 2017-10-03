@@ -74,8 +74,8 @@ public class MyArrayList<T> implements List<T> {
      */
     @Override
     public boolean contains(Object o) {
-        for (T e : items) {
-            if (Objects.equals(e, o)) {
+        for (int i = 0; i < this.size; ++i) {
+            if (Objects.equals(this.get(i), o)) {
                 return true;
             }
         }
@@ -148,16 +148,6 @@ public class MyArrayList<T> implements List<T> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean addAll(Collection<? extends T> c) {
-//        if (c.isEmpty()) {
-//            return false;
-//        }
-//        if (c.size() + size >= this.items.length) {
-//            this.ensureCapacity(c.size() - size);
-//        }
-//        T[] collectionToCopy = (T[]) c.toArray();
-//        int oldSize = this.size;
-//        System.arraycopy(collectionToCopy, 0, this.items, size, collectionToCopy.length);
-//        return oldSize != this.size;
         return this.addAll(this.size, c);
     }
 
@@ -287,17 +277,50 @@ public class MyArrayList<T> implements List<T> {
 
     @Override
     public String toString() {
-        return Arrays.toString(items);
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        MyIterator itr = this.iterator();
+        while (itr.hasNext()) {
+            T e = itr.next();
+            sb.append(e);
+            if (itr.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
+    /**
+     * Возвращает индекс первого вхождения переданного элемента в список, или -1, если такого элемента в списке нет.
+     *
+     * @param o переданный элемент
+     * @return индекс первого вхождения, или -1
+     */
     @Override
     public int indexOf(Object o) {
-        return 0;
+        for (int i = 0; i < size; ++i) {
+            if (Objects.equals(this.items[i], o)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
+    /**
+     * Возвращает индекс последнего вхождения переданного элемента в список, или -1б если такого элемента в списке нет.
+     *
+     * @param o переданный элемент
+     * @return индекс последнего вхождения, или -1
+     */
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        for (int i = size - 1; i > 0; --i) {
+            if (Objects.equals(this.items[i], o)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -312,12 +335,34 @@ public class MyArrayList<T> implements List<T> {
 
     @Override
     public List subList(int fromIndex, int toIndex) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
+    /**
+     * Убирает из списка все элементы, не содержащиеся в переданной коллекции
+     *
+     * @param c переданная коллекция
+     * @return true, если текущий список был изменен
+     */
     @Override
     public boolean retainAll(Collection c) {
-        return false;
+        try {
+            @SuppressWarnings("unchecked")
+            T[] coincidentItems = (T[]) new Object[this.size];
+            int i = 0;
+            for(T listElement: this) {
+                if (c.contains(listElement)) {
+                    coincidentItems[i] = listElement;
+                    ++i;
+                }
+            }
+            this.items = coincidentItems;
+            this.size = i;
+         } catch (ClassCastException e) {
+            System.out.println("Типы коллекций не совпадают!");
+            return false;
+        }
+        return true;
     }
 
     @Override
